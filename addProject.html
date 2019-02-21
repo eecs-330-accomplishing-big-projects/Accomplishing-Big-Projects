@@ -133,7 +133,7 @@
         
 
         <!-- Begin Page Content -->
-        <div class="container-fluid">
+        <div class="container-fluid" id="Subtasks">
             <a href="#" class="d-none d-sm-inline-block btn btn-primary shadow-sm"><i class="fas fa-download fa-sm text-white-50"></i> Save Project</a>
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-3 mt-4">
@@ -157,7 +157,7 @@
                 <div class="col-xl-6">
                     No subtasks currently added.
                     <form>
-                        <button type="button" class="btn btn-primary btn-icon-split">
+                        <button type="button" class="btn btn-primary btn-icon-split" onclick="addSubtask()">
                             <span class="icon text-white-50">
                                 <i class="material-icons">add</i>
                             </span>
@@ -236,7 +236,7 @@
   <!-- Page level custom scripts -->
   <script src="js/demo/chart-area-demo.js"></script>
   <script src="js/demo/chart-pie-demo.js"></script>
-
+  <script src="js/subtasks.js"></script>
 </body>
 
 </html>
