@@ -10,7 +10,7 @@ function checkDetails() {
         return false;
     }
     else{
-        el.href="index.html";
+        el.href="dashboard.html";
         return true;
     }
 }
