@@ -496,7 +496,7 @@ mark,
     padding-top: 25px;
     padding-bottom: 0px;
     font-weight: 700;
-    color: cornsilk;
+    color: #FFFFFF;
 }
 
 .img-thumbnail {
@@ -2611,6 +2611,10 @@ textarea.form-control {
   opacity: 0.65;
 }
 
+.incorrect-password {
+    color: #FFFFFF;
+}
+
 a.btn.disabled,
 fieldset:disabled a.btn {
   pointer-events: none;
@@ -2622,10 +2626,23 @@ fieldset:disabled a.btn {
   border-color: #4e73df;
 }
 
+.btn-forgot-password {
+  color: #fff;
+  background-color: #e74a3b;
+  border-color: #e74a3b;
+}
+
+
 .btn-primary:hover {
   color: #fff;
   background-color: #2e59d9;
   border-color: #2653d4;
+}
+
+.btn-forgot-password:hover {
+  color: #fff;
+  background-color: #B10000;
+  border-color: #B10000;
 }
 
 .btn-primary:focus, .btn-primary.focus {
@@ -2637,6 +2654,13 @@ fieldset:disabled a.btn {
   color: #fff;
   background-color: #4e73df;
   border-color: #4e73df;
+}
+
+.btn-forgot-password:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
+.show > .btn-forgot-password.dropdown-toggle {
+  color: #fff;
+  background-color: #2653d4;
+  border-color: #244ec9;
 }
 
 .btn-primary:not(:disabled):not(.disabled):active, .btn-primary:not(:disabled):not(.disabled).active,
@@ -10688,8 +10712,8 @@ a:focus {
 
 .bg-gradient-primary {
   background-color: #4e73df;
-  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(10%, #4e73df), to(#224abe));
-  background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+  background-image: -webkit-gradient(linear, left top, right bottom, color-stop(10%, #4e73df), to(#4A2D74));
+  background-image: linear-gradient(180deg, #4e73df 10%, #4A2D74 100%);
   background-size: cover;
 }
 
@@ -11604,7 +11628,7 @@ a:focus {
 }
 
 .bg-register-image {
-  background: url("https://source.unsplash.com/Mv9hjnEUHR4/600x800");
+  background: url("../img/register-unsplash.jpg");
   background-position: center;
   background-size: cover;
 }
