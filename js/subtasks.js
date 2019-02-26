@@ -93,8 +93,16 @@ function saveSubtask(subtaskID)
     let saveButton = body.children[0].childNodes[4];
     body.children[0].removeChild(saveButton);
     let headerText = header.childNodes[0];
-    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
-
-    
+    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");    
 }
 
+var el = document.getElementById("MyName");
+
+function init(){
+    
+    var username = window.localStorage.getItem("CurrentUser");
+    var firstname = window.localStorage.getItem(username);
+    el.innerHTML = firstname;
+}
+
+init()
