@@ -88,6 +88,12 @@ function saveSubtask(subtaskID)
     let body = card.childNodes[1];
 
 
+
+    let subtaskTitle = body.childNodes[0].childNodes[1].value;
+    let estimatedTime = body.childNodes[0].childNodes[3].value;
+    let subTaskObject = {id: subtaskID, title: subtaskTitle, time: estimatedTime}
+    subtasks.push(subTaskObject);
+
     card.removeChild(header);
     card.prepend(createHeader(false,subtaskID));
     
