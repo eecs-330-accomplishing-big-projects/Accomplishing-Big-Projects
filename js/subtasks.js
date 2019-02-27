@@ -1,4 +1,4 @@
-let topSubtasks = [];
+let subtasks = [];
 let subTasks = 0;
 let savingTask = 0;
 
@@ -86,6 +86,7 @@ function saveSubtask(subtaskID)
     let card = frame.children[0];
     let header = card.childNodes[0];
     let body = card.childNodes[1];
+
 
     card.removeChild(header);
     card.prepend(createHeader(false,subtaskID));
