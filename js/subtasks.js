@@ -16,7 +16,6 @@ function addSubtask()
 
     rows.appendChild(newRow);
     subTasks++;
-    alert(subTasks);
 }
 
 function generateNewCard()
@@ -71,14 +70,29 @@ function createBody()
 function createSubtaskForm()
 {
     let form = document.createElement("Form");
-    form.innerHTML = "<h5>Subtask Name</h5>";
-    form.innerHTML += "<input type='text' class='form-control' placeholder='Enter subtask name'>";
-    form.innerHTML += "<h5>Estimated Time (hours)</h5>";
-    form.innerHTML += "<input type='number' class='form-control' placeholder='Enter a time in hours'>";
-    form.innerHTML += "<button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(this.parentElement.parentElement.parentElement.parentElement.id)'><span class='icon text-white-50'><i class='material-icons'>add</i></span><span class='text'>Save Subtask</span></button>";
+
+    let formText = `<h5>Subtask Name</h5>
+                    <input type='text' class='form-control' placeholder='Enter subtask name'>
+                    <h5>Estimated Time (hours)</h5>
+                    <input type='number' class='form-control' placeholder='Enter a time in hours'>
+                    <button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
+                        <span class='icon text-white-50'><i class='material-icons'>add</i></span>
+                        <span class='text'>Save Subtask</span>
+                    </button>`;
+    formText.replace('\n','');
+
+
+    form.innerHTML = formText;
+
 
     return form;
 }
+
+function getButtonCardID(button)
+{
+    return button.parentElement.parentElement.parentElement.parentElement.id;
+}
+
 
 function saveSubtask(subtaskID)
 {
@@ -86,22 +100,60 @@ function saveSubtask(subtaskID)
     let card = frame.children[0];
     let header = card.childNodes[0];
     let body = card.childNodes[1];
+    let headerText = header.firstChild;
 
 
+    DisableFields(body);
+    let subTaskObject = {id: subtaskID, title: subtaskTitle.value, time: estimatedTime.value}
 
-    let subtaskTitle = body.childNodes[0].childNodes[1].value;
-    let estimatedTime = body.childNodes[0].childNodes[3].value;
-    let subTaskObject = {id: subtaskID, title: subtaskTitle, time: estimatedTime}
+    // if(subtasks.includes(subtaskObject))
     subtasks.push(subTaskObject);
 
-    card.removeChild(header);
-    card.prepend(createHeader(false,subtaskID));
+    headerText.innerHTML = subtaskTitle.value;
+
+    let editButton = createEditButton(); 
+    let deleteButton = createDeleteButton();
+    header.appendChild(deleteButton);
+    header.appendChild(editButton);
     
-    let saveButton = body.children[0].childNodes[4];
+    let saveButton = body.children[0].children[4];
     body.children[0].removeChild(saveButton);
-    let headerText = header.childNodes[0];
-    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");    
+
+    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
 }
+
+function DisableFields(cardBody)
+{
+    let subtaskTitle = cardBody.firstChild.children[1];
+    subtaskTitle.setAttribute("disabled","true");
+    let estimatedTime = cardBody.firstChild.children[3];
+    estimatedTime.setAttribute("disabled","true");
+}
+
+function createEditButton()
+{
+    let editButton = document.createElement("button");
+    editButton.innerHTML = "<i class='material-icons'>edit</i>";
+    editButton.setAttribute("onclick","AllowEdits()");
+    editButton.setAttribute("class","float-right btn")
+    return editButton;
+}
+
+function createDeleteButton()
+{
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "<i class='material-icons'>delete</i>";
+    deleteButton.setAttribute("onclick","deleteSubtask(deleteSubtask(getDeleteSubtaskCard(this))");
+    deleteButton.setAttribute("class","float-right btn btn-outline-danger")
+    return deleteButton;
+}
+
+function getDeleteSubtaskCard(button)
+{
+    return button.parentElement.parentElement.parentElement;
+}
+
+
 
 var el = document.getElementById("MyName");
 
