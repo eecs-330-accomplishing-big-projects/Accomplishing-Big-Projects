@@ -1,4 +1,4 @@
-let subtasks = [];
+let subtaskslist = [];
 let subTasks = 0;
 let savingTask = 0;
 
@@ -124,7 +124,7 @@ function addSubtaskToList(subtaskID, cardBody)
     let subtaskTitle = cardBody.firstChild.children[1];
     let estimatedTime = cardBody.firstChild.children[3];
     let subTaskObject = {id: subtaskID, title: subtaskTitle.value, time: estimatedTime.value};
-    subtasks.push(subTaskObject);
+    subtaskslist.push(subTaskObject);
 }
 
 function updateHeader(card)
@@ -190,6 +190,43 @@ function init(){
     var username = window.localStorage.getItem("CurrentUser");
     var firstname = window.localStorage.getItem(username);
     el.innerHTML = firstname;
+}
+
+function saveProject(){
+    
+    console.log(subtaskslist);
+    debugger;
+
+    var projectobject = Object();
+    
+    var num = 0;
+    flag = false;
+    
+    while(flag==false){
+        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser").concat("project",num.toString())) === null){
+            flag = true;
+            break;
+        }
+        else{
+            num += 1;
+        }
+    }
+    
+    var stringkey = window.localStorage.getItem("CurrentUser").concat("project",num.toString());
+    
+    projectobject.title = document.getElementById("projectname").value;
+    projectobject.subtasks = subtaskslist;
+    projectobject.currenttask = savingTask;
+    
+    console.log(projectobject);
+    debugger;
+    
+    window.localStorage.setItem(stringkey,JSON.stringify(projectobject));
+    
+    console.log(window.localStorage.getItem(stringkey));
+    debugger;
+    
+    document.getElementById("saveprojectbtn").innerHTML="<i class=\"fas fa-download fa-sm text-white-50\"></i> Project Saved!";
 }
 
 init()
