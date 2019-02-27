@@ -106,6 +106,7 @@ function saveSubtask(subtaskID)
 
     DisableFields(cardBody);
     updateHeader(card);
+    addSubtaskToList(subtaskID,cardBody)
     let saveButton = cardBody.children[0].children[4];
     cardBody.children[0].removeChild(saveButton);
 }
@@ -118,7 +119,7 @@ function deleteSubtask()
 
     }
 }
-function addSubtaskToList()
+function addSubtaskToList(subtaskID, cardBody)
 {
     let subtaskTitle = cardBody.firstChild.children[1];
     let estimatedTime = cardBody.firstChild.children[3];
