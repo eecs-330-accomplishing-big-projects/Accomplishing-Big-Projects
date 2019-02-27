@@ -80,11 +80,7 @@ function createSubtaskForm()
                         <span class='text'>Save Subtask</span>
                     </button>`;
     formText.replace('\n','');
-
-
     form.innerHTML = formText;
-
-
     return form;
 }
 
@@ -98,29 +94,50 @@ function saveSubtask(subtaskID)
 {
     let frame = document.getElementById(subtaskID);
     let card = frame.children[0];
-    let header = card.childNodes[0];
-    let body = card.childNodes[1];
-    let headerText = header.firstChild;
+    let cardBody = card.childNodes[1];
 
+    DisableFields(cardBody);
+    updateHeader(card);
+    let saveButton = cardBody.children[0].children[4];
+    cardBody.children[0].removeChild(saveButton);
+}
+function deleteSubtask()
+{
+    // TODO
+    var result = confirm("want to delete?");
+    if(result)
+    {
 
-    DisableFields(body);
-    let subTaskObject = {id: subtaskID, title: subtaskTitle.value, time: estimatedTime.value}
-
-    // if(subtasks.includes(subtaskObject))
+    }
+}
+function addSubtaskToList()
+{
+    let subtaskTitle = cardBody.firstChild.children[1];
+    let estimatedTime = cardBody.firstChild.children[3];
+    let subTaskObject = {id: subtaskID, title: subtaskTitle.value, time: estimatedTime.value};
     subtasks.push(subTaskObject);
+}
+
+function updateHeader(card)
+{
+    let header = card.childNodes[0];
+    let headerText = header.firstChild;
+    let cardBody = card.childNodes[1];
+    let subtaskTitle = cardBody.firstChild.children[1];
 
     headerText.innerHTML = subtaskTitle.value;
+    placeButtons(header);
+    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
+}
 
+function placeButtons(header)
+{
     let editButton = createEditButton(); 
     let deleteButton = createDeleteButton();
     header.appendChild(deleteButton);
     header.appendChild(editButton);
-    
-    let saveButton = body.children[0].children[4];
-    body.children[0].removeChild(saveButton);
-
-    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
 }
+
 
 function DisableFields(cardBody)
 {
@@ -129,12 +146,16 @@ function DisableFields(cardBody)
     let estimatedTime = cardBody.firstChild.children[3];
     estimatedTime.setAttribute("disabled","true");
 }
+function EnableFields()
+{
+    // TODO
+}
 
 function createEditButton()
 {
     let editButton = document.createElement("button");
     editButton.innerHTML = "<i class='material-icons'>edit</i>";
-    editButton.setAttribute("onclick","AllowEdits()");
+    editButton.setAttribute("onclick","EnableFields()");
     editButton.setAttribute("class","float-right btn")
     return editButton;
 }
@@ -143,7 +164,7 @@ function createDeleteButton()
 {
     let deleteButton = document.createElement("button");
     deleteButton.innerHTML = "<i class='material-icons'>delete</i>";
-    deleteButton.setAttribute("onclick","deleteSubtask(deleteSubtask(getDeleteSubtaskCard(this))");
+    deleteButton.setAttribute("onclick","deleteSubtask(deleteSubtask(getDeleteSubtaskCard(this)))");
     deleteButton.setAttribute("class","float-right btn btn-outline-danger")
     return deleteButton;
 }
