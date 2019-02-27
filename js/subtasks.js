@@ -10,11 +10,13 @@ function addSubtask()
     let newRow = document.createElement("div");
     let rows = document.getElementById("Subtasks");
     let subTask = generateNewCard();
-
+    let addSubtaskRow = document.getElementById("addSubtaskRow");
+    rows.removeChild(addSubtaskRow);
     newRow.className += "row";
     newRow.appendChild(subTask);
 
     rows.appendChild(newRow);
+    rows.appendChild(addSubtaskRow);
     subTasks++;
 }
 
@@ -28,7 +30,7 @@ function generateNewCard()
     subtaskCard.appendChild(body);
 
     let wrapperCol = document.createElement("div");
-    wrapperCol.setAttribute("class", "col-xl-3");
+    wrapperCol.setAttribute("class", "col-xl-6");
     wrapperCol.setAttribute("id","subtask-" + subTasks);
 
     wrapperCol.appendChild(subtaskCard);
@@ -47,16 +49,22 @@ function createHeader(editing, name = "New Subtask")
     {
         let header = document.createElement("div");
         header.setAttribute("class", "card-header py-3");
-        header.innerHTML = "<h6 class='m-0 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h6>";
+        header.innerHTML = "<h5 class='m-0 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
+        addDeleteButton(header);
         return header;
     }
     else
     {
         let header = document.createElement("div");
         header.setAttribute("class", "card-header py-3");
-        header.innerHTML = "<h6 class='m-0 d-sm-inline-block font-weight-bold'>" + name + "</h6>";
+        header.innerHTML = "<h5 class='m-0 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
         return header;
     }   
+}
+function addDeleteButton(header)
+{
+    let deleteButton = createDeleteButton();
+    header.appendChild(deleteButton);
 }
 
 function createBody()
@@ -104,7 +112,7 @@ function saveSubtask(subtaskID)
 function deleteSubtask()
 {
     // TODO
-    var result = confirm("want to delete?");
+    var result = confirm("Delete Subtask?");
     if(result)
     {
 
@@ -126,15 +134,13 @@ function updateHeader(card)
     let subtaskTitle = cardBody.firstChild.children[1];
 
     headerText.innerHTML = subtaskTitle.value;
-    placeButtons(header);
+    addEditButton(header);
     headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
 }
 
-function placeButtons(header)
+function addEditButton(header)
 {
     let editButton = createEditButton(); 
-    let deleteButton = createDeleteButton();
-    header.appendChild(deleteButton);
     header.appendChild(editButton);
 }
 
