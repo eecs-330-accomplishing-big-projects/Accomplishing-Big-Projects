@@ -3,7 +3,7 @@
 
 <head>
 
-  <title>PlanitOut - Add A Project</title>
+  <title>PlanitOut - Create a Collaboration</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -72,9 +72,21 @@
         <div class="container-fluid" id="Subtasks">
             <br>
             <a href="#" class="d-none d-sm-inline-block btn btn-primary shadow-sm" onclick="saveProject()"><i class="fas fa-download fa-sm text-white-50"></i> Save Project</a>
+            <a href="#" class="d-none d-sm-inline-block btn btn-primary shadow-sm" onclick="addCollab()"><i class="fas fa-plus fa-sm text-white-50"></i> Add People</a>
+            <div id = "shared-with">Shared With:</div>
+
+            <div class="d-sm-flex align-items-center justify-content-between mb-3 mt-4">
+              <!-- <div class="form-group"> -->
+                  <form>
+                      <input type="text" class="form-control" placeholder="Enter email address" id = "email-form">
+                  </form>
+              <!-- </div> -->
+
+            </div>
+
             <!-- Page Heading -->
             <div class="d-sm-flex align-items-center justify-content-between mb-3 mt-4">
-                <h1 class="h2 mb-0 text-gray-800">New Project</h1>
+                <h1 class="h2 mb-0 text-gray-800">New Collaboration</h1>
 
             </div>
 
@@ -149,7 +161,8 @@
   <script src="js/demo/chart-area-demo.js"></script>
   <script src="js/demo/chart-pie-demo.js"></script>
   <script src="js/subtasks.js"></script>
-    <script src="js/logout.js"></script>
+  <script src="js/logout.js"></script>
+  <script src="js/addCollaborators.js"></script>
 </body>
 
 </html>
