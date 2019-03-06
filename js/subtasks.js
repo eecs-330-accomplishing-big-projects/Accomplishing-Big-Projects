@@ -1,4 +1,5 @@
 let subtaskslist = [];
+let projectsList = [];
 let subTasks = 0;
 let savingTask = 0;
 
@@ -199,20 +200,20 @@ function saveProject(){
 
     var projectobject = Object();
     
-    var num = 0;
+    var projectNumber = 0;
     flag = false;
     
     while(flag==false){
-        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser").concat("project",num.toString())) === null){
+        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser").concat("project",projectNumber.toString())) === null){
             flag = true;
             break;
         }
         else{
-            num += 1;
+            projectNumber += 1;
         }
     }
     
-    var stringkey = window.localStorage.getItem("CurrentUser").concat("project",num.toString());
+    var stringkey = window.localStorage.getItem("CurrentUser").concat("project",projectNumber.toString());
     
     projectobject.title = document.getElementById("projectname").value;
     projectobject.subtasks = subtaskslist;
