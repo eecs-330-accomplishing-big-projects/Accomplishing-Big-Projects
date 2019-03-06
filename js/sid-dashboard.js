@@ -10,7 +10,7 @@ function init(){
     var innerHTMLstring ="";
     
     for(var i = 0; i < 3; i++){
-        var currproject = window.localStorage.getItem(username.concat("project",i.toString()))
+        var currproject = window.localStorage.getItem(username)
         if(currproject===null){
             console.log("no current projects");
             debugger;

@@ -1,3 +1,8 @@
+let subtaskslist = [];
+let projectsList = [];
+let selectedProject;
+let UserName;
+
 function createProject(){
 	let tabs = document.getElementById("myTab")
 	let tabPanes = document.getElementById("myTabContent")
@@ -37,6 +42,13 @@ function createProject(){
 
     document.getElementById("projectName").value = ""
     document.getElementById("projectDeadline").value = ""
+
+    let newProject = {id: name, tabName,deadline: projectDeadline, subtasks: []};
+    projectsList.push(newProject);
+
+
+
+
 }
 
 function styleProjectHeaders(name, tabPane){
@@ -67,16 +79,11 @@ function totalTime(){
 /////////////////////// subtasks
 
 
-let subtaskslist = [];
-let projectsList = [];
+
 let subTasks = 0;
 let savingTask = 0;
 
 // TODO: delete empty rows
-
-
-
-
 
 
 
@@ -261,9 +268,22 @@ var el = document.getElementById("MyName");
 
 function init(){
     
-    var username = window.localStorage.getItem("CurrentUser");
-    var firstname = window.localStorage.getItem(username);
+    UserName = window.localStorage.getItem("CurrentUser");
+
+    var firstname = window.localStorage.getItem(UserName);
     el.innerHTML = firstname;
+
+    projectsList = window.localStorage.getItem(UserName);
+    if(projectsList)
+    {
+        projectsList = JSON.parse(projectsList);
+    }
+    else
+    {
+        projectsList = [];
+    }
+
+    console.log(projectsList);
 }
 
 function saveProject(){
@@ -273,29 +293,28 @@ function saveProject(){
 
     var projectobject = Object();
     
-    var num = 0;
+
     flag = false;
     
     while(flag==false){
-        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser").concat("project",num.toString())) === null){
+        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser")) == null){
+            projectobject.title = document.getElementById("projectname").value;
+            projectobject.subtasks = subtaskslist;
+            projectobject.currenttask = savingTask;
+            projectsList.push(projectobject);
             flag = true;
             break;
         }
-        else{
-            num += 1;
-        }
     }
     
-    var stringkey = window.localStorage.getItem("CurrentUser").concat("project",num.toString());
+    let stringkey = UserName;
     
-    projectobject.title = document.getElementById("projectname").value;
-    projectobject.subtasks = subtaskslist;
-    projectobject.currenttask = savingTask;
+
     
     console.log(projectobject);
     debugger;
     
-    window.localStorage.setItem(stringkey,JSON.stringify(projectobject));
+    window.localStorage.setItem(stringkey,JSON.stringify(projectsList));
     
     console.log(window.localStorage.getItem(stringkey));
     debugger;
