@@ -70,43 +70,29 @@
             <h1 class="h3 mb-0 text-gray-800">Collaboration Projects</h1>
           </div>
 
-          <!--Collabs input
-          <div class="d-sm-flex align-items-center mb-3 mt-4">
-                <form>
-                    <input type="text" class="form-control" placeholder="Enter email address" id = "email-form">
-                </form>
-                &ensp;
-                <a href="#" class="d-none d-sm-inline-block btn btn-primary shadow-sm" onclick="addCollab()"><i class="fas fa-plus fa-sm text-white-"></i> Add People</a>
-          </div
-          <div id = "shared-with">Shared With:</div>
           
-          -->
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item">
+              <a class="nav-item nav-link active" target="_self" href=# data-toggle="modal" data-target="#createProjectModal" role="tab">+ Add Project</a>
+            </li>
+          </ul>
 
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab"></div>
+          </div>        
 
-          <!-- Creating a checklist Item
-          <div class="input-group mb-3">
-            <div class="input-group-prepend">
-              <div class="input-group-text">
-                <input type="checkbox" aria-label="Checkbox for following text input">
-              </div>
-            </div>
-            <input type="text" class="form-control" aria-label="Text input with checkbox">
-          </div>
-          -->
-
-          
           <!-- Modal -->
           <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h5 class="modal-title" id="exampleModalLabel">Create a New Collaboration Project</h5>
+                  <h5 class="modal-title" id="exampleModalLabel">Create a New Solo Project</h5>
                   <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form>
+                  <form id="myForm">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Project Name</label>
                       <input type="text" class="form-control" id="projectName" placeholder="Enter Project Name">
@@ -115,35 +101,17 @@
                       <label for="exampleInputPassword1">Project Deadline</label>
                       <input type="date" class="form-control" id="projectDeadline" placeholder="Enter Project Deadline">
                     </div>
-                    <button type="submit" class="btn btn-primary" onclick="createProject()">Create Project</button>
+                    <button type="button" class="btn btn-primary" onclick="createCollabProject()" data-dismiss="modal">Create Project</button>
                   </form>
                 </div>
               </div>
             </div>
           </div>
 
-          <!-- Tabs -->
-          <nav>
-            <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              
-              <a class="nav-item nav-link active" target="_self" href="addCollaboration.html" data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
-            </div>
-          </nav>
-
-
-          <!-- Different Tab "Pages" -->
-          <div class="tab-content" id="nav-tabContent">
-
-          </div>
-
-
-    </div>
-    <!-- End of Content Wrapper -->
-
     </div>
     <!-- End of Content Wrapper --> 
 
-      </div></div>
+  </div>
   <!-- End of Page Wrapper -->
 
   <!-- Bootstrap core JavaScript-->
