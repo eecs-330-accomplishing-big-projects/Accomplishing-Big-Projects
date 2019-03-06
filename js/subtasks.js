@@ -1,4 +1,5 @@
 let subtaskslist = [];
+let projectsList = [];
 let subTasks = 0;
 let savingTask = 0;
 
