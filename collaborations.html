@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>PlanitOut - Dashboard</title>
+    <title>PlanitOut - Collaborations</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -70,11 +70,61 @@
             <h1 class="h3 mb-0 text-gray-800">Collaboration Projects</h1>
           </div>
 
+          <!--Collabs input
+          <div class="d-sm-flex align-items-center mb-3 mt-4">
+                <form>
+                    <input type="text" class="form-control" placeholder="Enter email address" id = "email-form">
+                </form>
+                &ensp;
+                <a href="#" class="d-none d-sm-inline-block btn btn-primary shadow-sm" onclick="addCollab()"><i class="fas fa-plus fa-sm text-white-"></i> Add People</a>
+          </div
+          <div id = "shared-with">Shared With:</div>
+          
+          -->
+
+
+          <!-- Creating a checklist Item
+          <div class="input-group mb-3">
+            <div class="input-group-prepend">
+              <div class="input-group-text">
+                <input type="checkbox" aria-label="Checkbox for following text input">
+              </div>
+            </div>
+            <input type="text" class="form-control" aria-label="Text input with checkbox">
+          </div>
+          -->
+          <!-- Modal -->
+          <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Create a New Collaboration Project</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Project Name</label>
+                      <input type="text" class="form-control" id="projectName" placeholder="Enter Project Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Project Deadline</label>
+                      <input type="date" class="form-control" id="projectDeadline" placeholder="Enter Project Deadline">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="createProject()">Create Project</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <!-- Tabs -->
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
               
-              <a class="nav-item nav-link active" target="_self" href="addCollaboration.html" role="tab">+</a>
+              <a class="nav-item nav-link active" target="_self" href="addCollaboration.html" data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
             </div>
           </nav>
 
@@ -84,8 +134,12 @@
 
           </div>
 
+
     </div>
     <!-- End of Content Wrapper -->
+
+    </div>
+    <!-- End of Content Wrapper --> 
 
       </div></div>
   <!-- End of Page Wrapper -->
@@ -108,8 +162,9 @@
   <script src="js/demo/chart-pie-demo.js"></script>
 
     <!-- Custom scripts for current page-->
-    <script src="js/sid-dashboard.js"></script>
     <script src="js/logout.js"></script>
+    <script src="js/addCollaborators.js"></script>
+    <script src="js/createProject.js"></script>
 
 
 

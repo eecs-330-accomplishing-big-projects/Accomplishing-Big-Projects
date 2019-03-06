@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>PlanitOut - Dashboard</title>
+    <title>PlanitOut - Solo Projects</title>
 
   <!-- Custom fonts for this template-->
   <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
@@ -73,16 +73,46 @@
           <!-- Tabs -->
           <nav>
             <div class="nav nav-tabs" id="nav-tab" role="tablist">
-              
-              <a class="nav-item nav-link active" target="_self" href="addProject.html" role="tab">+</a>
+              <a class="nav-item nav-link active" target="_self" href="addProject.html" data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
             </div>
           </nav>
+
+          <!-- Modal -->
+          <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h5 class="modal-title" id="exampleModalLabel">Create a New Solo Project</h5>
+                  <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                  </button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="form-group">
+                      <label for="exampleInputEmail1">Project Name</label>
+                      <input type="text" class="form-control" id="projectName" placeholder="Enter Project Name">
+                    </div>
+                    <div class="form-group">
+                      <label for="exampleInputPassword1">Project Deadline</label>
+                      <input type="date" class="form-control" id="projectDeadline" placeholder="Enter Project Deadline">
+                    </div>
+                    <button type="submit" class="btn btn-primary" onclick="createProject()">Create Project</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
 
 
           <!-- Different Tab "Pages" -->
           <div class="tab-content" id="nav-tabContent">
 
           </div>
+
+
+    </div>
+    <!-- End of Content Wrapper -->
 
     </div>
     <!-- End of Content Wrapper -->
