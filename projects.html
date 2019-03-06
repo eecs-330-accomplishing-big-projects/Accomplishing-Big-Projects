@@ -80,7 +80,7 @@
               <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
             </li>
             <li class="nav-item">
-              <a class="nav-item nav-link" target="_self" href="addProject.html" data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
+              <a class="nav-item nav-link" target="_self" href=# data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
             </li>
           </ul>
 
@@ -101,7 +101,7 @@
                   </button>
                 </div>
                 <div class="modal-body">
-                  <form>
+                  <form id="myForm">
                     <div class="form-group">
                       <label for="exampleInputEmail1">Project Name</label>
                       <input type="text" class="form-control" id="projectName" placeholder="Enter Project Name">
@@ -110,7 +110,7 @@
                       <label for="exampleInputPassword1">Project Deadline</label>
                       <input type="date" class="form-control" id="projectDeadline" placeholder="Enter Project Deadline">
                     </div>
-                    <button type="submit" class="btn btn-primary" onclick="createProject()">Create Project</button>
+                    <button type="button" class="btn btn-primary" onclick="createProject()" data-dismiss="modal">Create Project</button>
                   </form>
                 </div>
               </div>
