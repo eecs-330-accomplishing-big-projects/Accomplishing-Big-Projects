@@ -1,5 +1,7 @@
+
+
 let subtaskslist = [];
-let projectsList = [];
+let userData = [];
 let selectedProject;
 let UserName;
 
@@ -44,7 +46,7 @@ function createProject(){
     document.getElementById("projectDeadline").value = ""
 
     let newProject = {id: name, tabName,deadline: projectDeadline, subtasks: []};
-    projectsList.push(newProject);
+    userData.push(newProject);
 
 
 
@@ -269,42 +271,41 @@ var el = document.getElementById("MyName");
 function init(){
     
     UserName = window.localStorage.getItem("CurrentUser");
+    
+    var userDataString = window.localStorage.getItem(UserName);
 
-    var firstname = UserName;
+    var firstname = window.localStorage.getItem(UserName);
     el.innerHTML = firstname;
 
-    projectsList = window.localStorage.getItem(UserName);
-    if(projectsList)
+    userData = window.localStorage.getItem(UserName);
+    if(userData)
     {
-        projectsList = JSON.parse(projectsList);
+        userData = JSON.parse(userData);
     }
     else
     {
-        projectsList = [];
+        userData = {userName: UserName, projects: []}
     }
 
-    console.log(projectsList);
+    console.log(userData);
 }
 
 function saveProject(){
-    
-    console.log(subtaskslist);
+
     debugger;
 
     var projectobject = Object();
-    
+    let title = document.getElementById("projectname").value;
 
     flag = false;
+    console.log(findProjectByTitle(title));
     
-    while(flag==false){
-        if(window.localStorage.getItem(window.localStorage.getItem("CurrentUser")) == null){
-            projectobject.title = document.getElementById("projectname").value;
-            projectobject.subtasks = subtaskslist;
-            projectobject.currenttask = savingTask;
-            projectsList.push(projectobject);
-            flag = true;
-            break;
-        }
+    if(findProjectByTitle(title).length == 0){
+        projectobject.title = document.getElementById("projectname").value;
+        projectobject.subtasks = subtaskslist;
+        projectobject.currenttask = savingTask;
+        userData.projects.push(projectobject);
+        flag = true;
     }
     
     let stringkey = UserName;
@@ -314,12 +315,24 @@ function saveProject(){
     console.log(projectobject);
     debugger;
     
-    window.localStorage.setItem(stringkey,JSON.stringify(projectsList));
+    window.localStorage.setItem(stringkey,JSON.stringify(userData));
     
     console.log(window.localStorage.getItem(stringkey));
     debugger;
     
     document.getElementById("saveprojectbtn").innerHTML="<i class=\"fas fa-download fa-sm text-white-50\"></i> Project Saved!";
 }
+
+function findProjectByTitle(title)
+{
+    console.log(userData.projects);
+    return userData.projects.filter(project => project.title == title);
+}
+
+
+
+
+
+
 
 init()
