@@ -5,6 +5,54 @@ let userData = [];
 let selectedProject;
 let UserName;
 
+function displayProjectBody(title)
+{
+    let project = findProjectByTitle(title);
+    if(project.length > 0)
+    {
+        project = project[0];
+    }
+    project.subtasks.map(displaySubtask)
+}
+
+
+
+function displaySubtask(subtask)
+{
+    let newRow = document.createElement("div");
+    let rows = document.getElementById("Subtasks");
+    let card = generateExistingCard(subtask);
+    let addSubtaskRow = document.getElementById("addSubtaskRow");
+    rows.removeChild(addSubtaskRow);
+    newRow.className += "row";
+    newRow.appendChild(card);
+
+    rows.appendChild(newRow);
+    rows.appendChild(addSubtaskRow);
+    subTasks++;
+}
+
+function generateExistingCard(subtask)
+{
+
+    let subtaskCard = createSubtaskCard();
+    let header = createHeader(false,subtask.title);
+    addDeleteButton(header);
+    addEditButton(header);
+    let body = createBody();
+    subtaskCard.appendChild(header);
+    //subtaskCard.appendChild(body);
+
+    let wrapperCol = document.createElement("div");
+    wrapperCol.setAttribute("class", "col-xl-6");
+    wrapperCol.setAttribute("id","subtask-" + subTasks);
+
+    wrapperCol.appendChild(subtaskCard);
+    return wrapperCol;
+}
+
+
+
 function createProject(){
 	let tabs = document.getElementById("myTab")
 	let tabPanes = document.getElementById("myTabContent")
@@ -45,8 +93,8 @@ function createProject(){
     document.getElementById("projectName").value = ""
     document.getElementById("projectDeadline").value = ""
 
-    let newProject = {id: name, tabName,deadline: projectDeadline, subtasks: []};
-    userData.push(newProject);
+    let newProject = {title: name, tabName,deadline: projectDeadline, subtasks: []};
+    userData.projects.push(newProject);
 
 
 
@@ -133,15 +181,15 @@ function createHeader(editing, name = "New Subtask")
     {
         let header = document.createElement("div");
         header.setAttribute("class", "card-header py-3");
-        header.innerHTML = "<h5 class='m-0 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
+        header.innerHTML = "<h5 class=' align-middle m-1 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
         addDeleteButton(header);
         return header;
     }
     else
     {
         let header = document.createElement("div");
-        header.setAttribute("class", "card-header py-3");
-        header.innerHTML = "<h5 class='m-0 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
+        header.setAttribute("class", "card-header align-middle py-3");
+        header.innerHTML = "<h5 class='align-middle m-1 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
         return header;
     }   
 }
@@ -266,15 +314,14 @@ function getDeleteSubtaskCard(button)
 
 
 
-var el = document.getElementById("MyName");
 
 function init(){
     
     UserName = window.localStorage.getItem("CurrentUser");
     
-    var userDataString = window.localStorage.getItem(UserName);
-
-    var firstname = window.localStorage.getItem(UserName);
+    var el = document.getElementById("MyName");
+    var userData = JSON.parse(window.localStorage.getItem(UserName));
+    let firstname = userData.firstName;
     el.innerHTML = firstname;
 
     userData = window.localStorage.getItem(UserName);
@@ -299,23 +346,29 @@ function saveProject(){
 
     flag = false;
     console.log(findProjectByTitle(title));
-    
+    let stringkey = UserName;
     if(findProjectByTitle(title).length == 0){
         projectobject.title = document.getElementById("projectname").value;
         projectobject.subtasks = subtaskslist;
-        projectobject.currenttask = savingTask;
+        projectobject.deadline = document.getElementById("projectdeadline").value;
         userData.projects.push(projectobject);
+        window.localStorage.setItem(stringkey,JSON.stringify(userData));
+        alert("Project saved! Taking you to the project overview page.");
+        window.location.href="projects.html";
         flag = true;
     }
+    else
+    {
+        alert("Project with that title already exists -- not saving.");
+    }
     
-    let stringkey = UserName;
+
     
 
     
     console.log(projectobject);
     debugger;
-    
-    window.localStorage.setItem(stringkey,JSON.stringify(userData));
+
     
     console.log(window.localStorage.getItem(stringkey));
     debugger;
@@ -326,7 +379,7 @@ function saveProject(){
 function findProjectByTitle(title)
 {
     console.log(userData.projects);
-    return userData.projects.filter(project => project.title == title);
+    return userData.projects.filter(project => project.title === title);
 }
 
 
