@@ -270,7 +270,7 @@ function init(){
     
     UserName = window.localStorage.getItem("CurrentUser");
 
-    var firstname = window.localStorage.getItem(UserName);
+    var firstname = UserName;
     el.innerHTML = firstname;
 
     projectsList = window.localStorage.getItem(UserName);
