@@ -24,7 +24,8 @@ function fieldValidation(){
         existing = existing ? existing.split(',') : [];
         existing.push(user1)
         window.localStorage.setItem('userlist',existing.toString());
-        window.localStorage.setItem(user1,firstname);
+        let userData = {firstName: firstname, lastName: lastname, projects: []};
+        window.localStorage.setItem(user1,JSON.stringify(userData));
         el.href = "index.html";
         return true;
     }
