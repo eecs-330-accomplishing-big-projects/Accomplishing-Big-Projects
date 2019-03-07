@@ -451,10 +451,9 @@ function init(){
     
     UserName = window.localStorage.getItem("CurrentUser");
     
-    var el = document.getElementById("MyName");
+
     var localData = window.localStorage.getItem(UserName);
-    let firstname = localData.firstName;
-    el.innerHTML = firstname;
+
     if(localData)
     {
         userData = JSON.parse(localData);
@@ -464,6 +463,8 @@ function init(){
         userData = {userName: UserName, projects: []}
     }
 
+    var el = document.getElementById("MyName");
+    el.innerHTML = userData.firstName;
     console.log(userData);
 }
 
