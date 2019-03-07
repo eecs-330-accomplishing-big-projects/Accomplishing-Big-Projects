@@ -320,14 +320,12 @@ function init(){
     UserName = window.localStorage.getItem("CurrentUser");
     
     var el = document.getElementById("MyName");
-    var userData = JSON.parse(window.localStorage.getItem(UserName));
-    let firstname = userData.firstName;
+    var localData = window.localStorage.getItem(UserName);
+    let firstname = localData.firstName;
     el.innerHTML = firstname;
-
-    userData = window.localStorage.getItem(UserName);
-    if(userData)
+    if(localData)
     {
-        userData = JSON.parse(userData);
+        userData = JSON.parse(localData);
     }
     else
     {
