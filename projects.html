@@ -75,35 +75,13 @@
 
           <ul class="nav nav-tabs" id="myTab" role="tablist">
             <li class="nav-item">
-              <a class="nav-link active" id="home-tab" onclick="displayProjectBody('test-4')" data-toggle="tab" href="#home" role="tab" aria-controls="home" aria-selected="true">Home</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile" aria-selected="false">Profile</a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-item nav-link" target="_self" href=# data-toggle="modal" data-target="#createProjectModal" role="tab">+</a>
+              <a class="nav-item nav-link active" target="_self" href=# data-toggle="modal" data-target="#createProjectModal" role="tab">+ Add Project</a>
             </li>
           </ul>
 
-          <div class="tab-content rows" id="myTabContent">
-            <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">...</div>
-            <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">...</div>
-            <div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">...</div>
-            <div class="container-fluid" id="Subtasks">
-              <div class="row" id="addSubtaskRow" >
-                <div class="col-xl-6">
-                    <form>
-                        <button type="button" class="btn btn-primary btn-icon-split" onclick="addSubtask()">
-                            <span class="icon text-white-50">
-                                <i class="material-icons">add</i>
-                            </span>
-                            <span class="text">Add New Subtask</span>
-                        </button>
-                    </form>
-                </div>
-              </div>
-          </div>
-        </div>        
+          <div class="tab-content" id="myTabContent">
+            <div class="tab-pane fade show active" id="contact" role="tabpanel" aria-labelledby="contact-tab"></div>
+          </div>        
 
           <!-- Modal -->
           <div class="modal fade" id="createProjectModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -125,18 +103,17 @@
                       <label for="exampleInputPassword1">Project Deadline</label>
                       <input type="date" class="form-control" id="projectDeadline" placeholder="Enter Project Deadline">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="createProject()" data-dismiss="modal">Create Project</button>
+                    <button type="button" class="btn btn-primary" onclick="createSoloProject()" data-dismiss="modal">Create Project</button>
                   </form>
                 </div>
               </div>
             </div>
-          </div>
-
+          </div> 
 
     </div>
     <!-- End of Content Wrapper -->
 
-      </div></div>
+      </div>
   <!-- End of Page Wrapper -->
 
   <!-- Bootstrap core JavaScript-->
