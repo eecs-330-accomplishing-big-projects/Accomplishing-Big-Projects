@@ -51,7 +51,7 @@ function createSoloProject(){
     document.getElementById("projectDeadline").value = ""
 
     let newProject = {title: name, tabName,deadline: projectDeadline, subtasks: []};
-    userData.push(newProject);
+    userData.projects.push(newProject);
 }
 
 function createCollabProject(){
@@ -323,7 +323,7 @@ function createHeader(editing, name = "New Subtask")
         header.setAttribute("class", "card-header align-middle py-3");
         header.innerHTML = "<h5 class='align-middle m-1 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
         return header;
-    }   
+    }
 }
 function addDeleteButton(header)
 {
@@ -404,7 +404,7 @@ function updateHeader(card)
 
 function addEditButton(header)
 {
-    let editButton = createEditButton(); 
+    let editButton = createEditButton();
     header.appendChild(editButton);
 }
 
@@ -448,9 +448,9 @@ function getDeleteSubtaskCard(button)
 
 
 function init(){
-    
+
     UserName = window.localStorage.getItem("CurrentUser");
-    
+
 
     var localData = window.localStorage.getItem(UserName);
 
@@ -492,18 +492,18 @@ function saveProject(){
     {
         alert("Project with that title already exists -- not saving.");
     }
-    
 
-    
 
-    
+
+
+
     console.log(projectobject);
     debugger;
 
-    
+
     console.log(window.localStorage.getItem(stringkey));
     debugger;
-    
+
     document.getElementById("saveprojectbtn").innerHTML="<i class=\"fas fa-download fa-sm text-white-50\"></i> Project Saved!";
 }
 
