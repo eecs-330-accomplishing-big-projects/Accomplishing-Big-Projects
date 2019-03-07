@@ -511,3 +511,5 @@ function findProjectByTitle(title)
     console.log(userData.projects);
     return userData.projects.filter(project => project.title === title);
 }
+
+init();
