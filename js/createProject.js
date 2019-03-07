@@ -17,41 +17,11 @@ function createSoloProject(){
 	let tabName = projectName.value
 	let projectDeadline = projectDeadlineId.value
 
+	let newProject = {title: tabName, deadline: projectDeadline, subtasks: []};
 
-    let tab = document.createElement("li");
-    tab.setAttribute("class", "nav-item");
+	userData.projects.push(newProject);
 
-    let link = document.createElement("a");
-    link.setAttribute("class", "nav-link");
-    link.setAttribute("id", "tab" + tabName);
-    link.setAttribute("data-toggle", "tab");
-    link.setAttribute("href", "#panel" + tabName);
-    link.setAttribute("role", "tab");
-    link.setAttribute("aria-controls", "home");
-    link.setAttribute("aria-selected", "false");
-
-    link.innerHTML = tabName
-
-    tab.appendChild(link)
-    tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
-
-    let tabPane = document.createElement("div")
-    tabPane.setAttribute("class", "tab-pane fade")
-    tabPane.setAttribute("id", "panel" + tabName)
-    tabPane.setAttribute("role", "tabpanel")
-    tabPane.setAttribute("aria-labelledby", tabName + "-tab")
-
-    styleProjectHeaders(tabName, tabPane)
-
-    createTaskForm(tabPane)
-
-    tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
-
-    document.getElementById("projectName").value = ""
-    document.getElementById("projectDeadline").value = ""
-
-    let newProject = {title: name, tabName,deadline: projectDeadline, subtasks: []};
-    userData.projects.push(newProject);
+	updateTabs();
 }
 
 function createCollabProject(){
@@ -512,5 +482,63 @@ function findProjectByTitle(title)
     console.log(userData.projects);
     return userData.projects.filter(project => project.title === title);
 }
+
+
+function updateTabs()
+{
+
+		let tabs = document.getElementById("myTab")
+		let tabPanes = document.getElementById("myTabContent")
+
+// clear out the tablist this could definitely be done better
+	var i;
+		for (i = 0; i<userData.projects.length; i++){
+			var tabName = userData.projects[i].title;
+
+			console.log(tabName);
+
+			if (!document.getElementById("tab" + tabName)) {
+
+				let tab = document.createElement("li");
+				tab.setAttribute("class", "nav-item");
+
+				let link = document.createElement("a");
+				link.setAttribute("class", "nav-link");
+				link.setAttribute("id", "tab" + tabName);
+				link.setAttribute("data-toggle", "tab");
+				link.setAttribute("href", "#panel" + tabName);
+				link.setAttribute("role", "tab");
+				link.setAttribute("aria-controls", "home");
+				link.setAttribute("aria-selected", "false");
+
+				link.innerHTML = tabName
+
+				tab.appendChild(link)
+				tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
+
+				let tabPane = document.createElement("div")
+				tabPane.setAttribute("class", "tab-pane fade")
+				tabPane.setAttribute("id", "panel" + tabName)
+				tabPane.setAttribute("role", "tabpanel")
+				tabPane.setAttribute("aria-labelledby", tabName + "-tab")
+
+				styleProjectHeaders(tabName, tabPane)
+
+				createTaskForm(tabPane)
+
+				tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
+
+				document.getElementById("projectName").value = ""
+				document.getElementById("projectDeadline").value = ""
+			}
+
+		}
+
+}
+
+
+
+
+
 
 init();
