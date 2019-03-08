@@ -123,26 +123,6 @@ function styleProjectHeaders(name, tabPane){
 	tabPane.appendChild(totalEstTime)
 }
 
-function displayProjectSubtasks(tabName, tabPane)
-{
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 function createTaskForm(tabPane){
 	tabPane.innerHTML += "<br> <br>"
@@ -216,11 +196,10 @@ function totalTime(){
 function displayProjectBody(title)
 {
     let project = findProjectByTitle(title);
-    if(project.length > 0)
+    if(project)
     {
-        project = project[0];
+        project.subtasks.map(displaySubtask)
     }
-    project.subtasks.map(displaySubtask)
 }
 
 
@@ -502,7 +481,15 @@ function saveProject(){
 function findProjectByTitle(title)
 {
     console.log(userData.projects);
-    return userData.projects.filter(project => project.title === title);
+    let projectArray = userData.projects.filter(project => project.title === title)
+    if(projectArray.length > 0)
+    {
+        return projectArray[0];
+    }
+    else
+    {
+        return false;
+    }
 }
 
 
