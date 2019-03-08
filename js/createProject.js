@@ -124,51 +124,57 @@ function styleProjectHeaders(name, tabPane){
 }
 
 
-function createTaskForm(tabPane){
-	tabPane.innerHTML += "<br> <br>"
+function createTaskForm(tabName,tabPane){
+	tabPane.innerHTML += "<br> <br>";
 
-	let taskForm = document.createElement("div")
-	let taskRow = document.createElement("div")
-	let container = document.createElement("div")
-	let actualForm = document.createElement("form")
-	let addTaskButton = document.createElement("button")
-	let icon = document.createElement("span")
-	let iconPlaceholder = document.createElement("i")
-	let icon2 = document.createElement("span")
+	let taskForm = document.createElement("div");
+	let taskRow = document.createElement("div");
+	let container = document.createElement("div");
+	let actualForm = document.createElement("form");
+	let addTaskButton = document.createElement("button");
+	let icon = document.createElement("span");
+	let iconPlaceholder = document.createElement("i");
+	let icon2 = document.createElement("span");
 
-	taskForm.setAttribute("class", "container-fluid")
-	taskForm.setAttribute("id", "Subtasks")
+	taskForm.setAttribute("class", "container-fluid");
+	taskForm.setAttribute("id", "Subtasks-" + tabName);
 
-	taskRow.setAttribute("class", "row")
-	taskRow.setAttribute("id", "addSubtaskRow")
+	taskRow.setAttribute("class", "row");
+	taskRow.setAttribute("id", "addSubtaskRow");
 
-	container.setAttribute("class", "container-fluid")
+	container.setAttribute("class", "container-fluid");
 
-	addTaskButton.setAttribute("type", "button")
-	addTaskButton.setAttribute("class", "btn btn-primary btn-icon-split")
-	addTaskButton.setAttribute("onclick", "addSubtask()")
+	addTaskButton.setAttribute("type", "button");
+    addTaskButton.setAttribute("class", "btn btn-primary btn-icon-split");
+    addTaskButton.setAttribute("id",tabName + "-subtask");
+	addTaskButton.setAttribute("onclick", "addSubtask(this.id)");
 
-	icon.setAttribute("class", "icon text-white-50")
+	icon.setAttribute("class", "icon text-white-50");
 
-	iconPlaceholder.setAttribute("class", "material-icons")
-	iconPlaceholder.innerHTML = "+"
+	iconPlaceholder.setAttribute("class", "material-icons");
+	iconPlaceholder.innerHTML = "+";
 
-	icon2.setAttribute("class", "text")
-	icon2.innerHTML = "Add New Task"
+	icon2.setAttribute("class", "text");
+	icon2.innerHTML = "Add New Task";
 
-	icon.appendChild(iconPlaceholder)
+	icon.appendChild(iconPlaceholder);
 
-	addTaskButton.appendChild(icon)
-	addTaskButton.appendChild(icon2)
+	addTaskButton.appendChild(icon);
+	addTaskButton.appendChild(icon2);
 
-	container.appendChild(addTaskButton)
+	container.appendChild(addTaskButton);
 
-	taskRow.appendChild(container)
+	taskRow.appendChild(container);
 
-	taskForm.appendChild(taskRow)
+	taskForm.appendChild(taskRow);
 
-	tabPane.appendChild(taskForm)
+	tabPane.appendChild(taskForm);
 
+}
+
+function getProjectTabTitleFromAddTaskButton(button)
+{
+    return document.get
 }
 
 function totalTime(){
@@ -198,16 +204,17 @@ function displayProjectBody(title)
     let project = findProjectByTitle(title);
     if(project)
     {
-        project.subtasks.map(displaySubtask)
+        project.subtasks.map(
+            function(subtask) { return displaySubtask(subtask,title)}
+        );
+
     }
 }
 
-
-
-function displaySubtask(subtask)
+function displaySubtask(subtask,projectTitle)
 {
     let newRow = document.createElement("div");
-    let rows = document.getElementById("Subtasks");
+    let rows = document.getElementById("Subtasks-" + projectTitle);
     let card = generateExistingCard(subtask);
     let addSubtaskRow = document.getElementById("addSubtaskRow");
     rows.removeChild(addSubtaskRow);
@@ -240,7 +247,7 @@ function generateExistingCard(subtask)
 
 
 
-function addSubtask()
+function addSubtask(project)
 {
     let newRow = document.createElement("div");
     let rows = document.getElementById("Subtasks");
@@ -532,8 +539,8 @@ function updateTabs()
 				tabPane.setAttribute("aria-labelledby", tabName + "-tab")
 
 				styleProjectHeaders(tabName, tabPane)
-                displayProjectSubtasks(tabName, tabPane);
-                createTaskForm(tabPane)
+                displayProjectBody(tabName);
+                createTaskForm(tabName, tabPane)
                 
 
 				tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
