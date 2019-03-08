@@ -140,14 +140,14 @@ function createTaskForm(tabName,tabPane){
 	taskForm.setAttribute("id", "Subtasks-" + tabName);
 
 	taskRow.setAttribute("class", "row");
-	taskRow.setAttribute("id", "addSubtaskRow");
+	taskRow.setAttribute("id", "addSubtaskRow-" + tabName);
 
 	container.setAttribute("class", "container-fluid");
 
 	addTaskButton.setAttribute("type", "button");
     addTaskButton.setAttribute("class", "btn btn-primary btn-icon-split");
     addTaskButton.setAttribute("id",tabName + "-subtask");
-	addTaskButton.setAttribute("onclick", "addSubtask(this.id)");
+	addTaskButton.setAttribute("onclick", "addSubtask(getProjectTabTitle(this))");
 
 	icon.setAttribute("class", "icon text-white-50");
 
@@ -172,9 +172,20 @@ function createTaskForm(tabName,tabPane){
 
 }
 
-function getProjectTabTitleFromAddTaskButton(button)
+function getProjectTabTitle(button)
 {
-    return document.get
+    let buttonID = button.id;
+    let lastIndex = buttonID.lastIndexOf("-subtask");
+    let projectTitle = buttonID.substring(0,lastIndex);
+    return projectTitle;
+}
+
+function getProjectTitleFromCardBody(cardBody)
+{
+    let containerID = cardBody.parentElement.parentElement.id;
+    let lastIndex = containerID.lastIndexOf("project-")
+    let projectTitle = containerID.substring(lastIndex,containerID.length).split("project-")[1];
+    return projectTitle;
 }
 
 function totalTime(){
@@ -216,7 +227,7 @@ function displaySubtask(subtask,projectTitle)
     let newRow = document.createElement("div");
     let rows = document.getElementById("Subtasks-" + projectTitle);
     let card = generateExistingCard(subtask);
-    let addSubtaskRow = document.getElementById("addSubtaskRow");
+    let addSubtaskRow = document.getElementById("addSubtaskRow-" + projectTitle);
     rows.removeChild(addSubtaskRow);
     newRow.className += "row";
     newRow.appendChild(card);
@@ -234,9 +245,12 @@ function generateExistingCard(subtask)
     addDeleteButton(header);
     addEditButton(header);
     let body = createBody();
-    subtaskCard.appendChild(header);
-    //subtaskCard.appendChild(body);
 
+    subtaskCard.appendChild(header);
+    subtaskCard.appendChild(body);
+    DisableFields(body);
+    populateFields(body,subtask);
+    removeSaveSubtaskButton(body);
     let wrapperCol = document.createElement("div");
     wrapperCol.setAttribute("class", "col-xl-6");
     wrapperCol.setAttribute("id","subtask-" + subTasks);
@@ -245,14 +259,19 @@ function generateExistingCard(subtask)
     return wrapperCol;
 }
 
+function populateFields(cardBody,subtask)
+{
+    cardBody.firstChild.children[1].value = subtask.title;
+    cardBody.firstChild.children[3].value = subtask.time;
+}
 
 
 function addSubtask(project)
 {
     let newRow = document.createElement("div");
-    let rows = document.getElementById("Subtasks");
-    let subTask = generateNewCard();
-    let addSubtaskRow = document.getElementById("addSubtaskRow");
+    let rows = document.getElementById("Subtasks-" + project);
+    let subTask = generateNewCard(project);
+    let addSubtaskRow = document.getElementById("addSubtaskRow-" + project);
     rows.removeChild(addSubtaskRow);
     newRow.className += "row";
     newRow.appendChild(subTask);
@@ -262,7 +281,7 @@ function addSubtask(project)
     subTasks++;
 }
 
-function generateNewCard()
+function generateNewCard(project)
 {
 
     let subtaskCard = createSubtaskCard();
@@ -273,7 +292,7 @@ function generateNewCard()
 
     let wrapperCol = document.createElement("div");
     wrapperCol.setAttribute("class", "col-xl-6");
-    wrapperCol.setAttribute("id","subtask-" + subTasks);
+    wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
 
     wrapperCol.appendChild(subtaskCard);
     return wrapperCol;
@@ -348,10 +367,25 @@ function saveSubtask(subtaskID)
 
     DisableFields(cardBody);
     updateHeader(card);
-    addSubtaskToList(subtaskID,cardBody)
+    addSubtaskToList(cardBody)
+    removeSaveSubtaskButton(cardBody);
+    saveUserData();
+}
+
+
+function removeSaveSubtaskButton(cardBody)
+{
     let saveButton = cardBody.children[0].children[4];
     cardBody.children[0].removeChild(saveButton);
 }
+function saveUserData()
+{
+    window.localStorage.setItem(UserName,JSON.stringify(userData));
+}
+
+
+
+
 function deleteSubtask()
 {
     // TODO
@@ -360,13 +394,20 @@ function deleteSubtask()
 
     }
 }
-function addSubtaskToList(subtaskID, cardBody)
+function addSubtaskToList(cardBody)
 {
     let subtaskTitle = cardBody.firstChild.children[1];
     let estimatedTime = cardBody.firstChild.children[3];
-    let subTaskObject = {id: subtaskID, title: subtaskTitle.value, time: estimatedTime.value};
-    subtaskslist.push(subTaskObject);
+   
+    let projectTitle = getProjectTitleFromCardBody(cardBody);
+    let projectIndex = getProjectIndexByTitle(projectTitle);
+
+
+    let subTaskObject = {title: subtaskTitle.value, time: estimatedTime.value, flag: false};
+    userData.projects[projectIndex].subtasks.push(subTaskObject);
 }
+
+
 
 function updateHeader(card)
 {
@@ -499,6 +540,18 @@ function findProjectByTitle(title)
     }
 }
 
+function getProjectIndexByTitle(title)
+{
+    for(let i = 0; i < userData.projects.length; i++)
+    {
+        if(userData.projects[i].title === title)
+        {
+            return i;
+        }
+    }
+    return false;
+}
+
 
 function updateTabs()
 {
@@ -516,7 +569,8 @@ function updateTabs()
 			if (!document.getElementById("tab" + tabName)) {
 
 				let tab = document.createElement("li");
-				tab.setAttribute("class", "nav-item");
+                tab.setAttribute("class", "nav-item");
+                
 
 				let link = document.createElement("a");
 				link.setAttribute("class", "nav-link");
@@ -539,11 +593,11 @@ function updateTabs()
 				tabPane.setAttribute("aria-labelledby", tabName + "-tab")
 
 				styleProjectHeaders(tabName, tabPane)
+                createTaskForm(tabName, tabPane);
+                tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
                 displayProjectBody(tabName);
-                createTaskForm(tabName, tabPane)
-                
 
-				tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
+
 
 				document.getElementById("projectName").value = ""
 				document.getElementById("projectDeadline").value = ""
