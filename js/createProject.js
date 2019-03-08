@@ -20,6 +20,7 @@ function createSoloProject(){
 	let newProject = {title: tabName, deadline: projectDeadline, subtasks: []};
 
 	userData.projects.push(newProject);
+	localStorage[localStorage.CurrentUser] = JSON.stringify(userData);
 
 	updateTabs();
 }
