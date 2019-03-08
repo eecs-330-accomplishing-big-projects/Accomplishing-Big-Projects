@@ -123,6 +123,27 @@ function styleProjectHeaders(name, tabPane){
 	tabPane.appendChild(totalEstTime)
 }
 
+function displayProjectSubtasks(tabName, tabPane)
+{
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 function createTaskForm(tabPane){
 	tabPane.innerHTML += "<br> <br>"
 
@@ -524,8 +545,9 @@ function updateTabs()
 				tabPane.setAttribute("aria-labelledby", tabName + "-tab")
 
 				styleProjectHeaders(tabName, tabPane)
-
-				createTaskForm(tabPane)
+                displayProjectSubtasks(tabName, tabPane);
+                createTaskForm(tabPane)
+                
 
 				tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
 
