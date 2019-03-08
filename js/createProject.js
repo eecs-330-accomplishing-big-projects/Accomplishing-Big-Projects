@@ -552,6 +552,11 @@ function getProjectIndexByTitle(title)
     return false;
 }
 
+function decodeName(codedName)
+{
+    
+}
+
 
 function updateTabs()
 {
@@ -563,39 +568,40 @@ function updateTabs()
 	var i;
 		for (i = 0; i<userData.projects.length; i++){
 			var tabName = userData.projects[i].title;
-
+            let codedTabName = tabName.replace(" ","_");
 			console.log(tabName);
 
-			if (!document.getElementById("tab" + tabName)) {
+			if (!document.getElementById("tab" + codedTabName)) {
 
 				let tab = document.createElement("li");
                 tab.setAttribute("class", "nav-item");
-                
+
+
 
 				let link = document.createElement("a");
 				link.setAttribute("class", "nav-link");
-				link.setAttribute("id", "tab" + tabName);
+				link.setAttribute("id", "tab" + codedTabName);
 				link.setAttribute("data-toggle", "tab");
-				link.setAttribute("href", "#panel" + tabName);
+				link.setAttribute("href", "#panel" + codedTabName);
 				link.setAttribute("role", "tab");
 				link.setAttribute("aria-controls", "home");
 				link.setAttribute("aria-selected", "false");
 
-				link.innerHTML = tabName
+				link.innerHTML = codedTabName
 
 				tab.appendChild(link)
 				tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
 
 				let tabPane = document.createElement("div")
 				tabPane.setAttribute("class", "tab-pane fade")
-				tabPane.setAttribute("id", "panel" + tabName)
+				tabPane.setAttribute("id", "panel" + codedTabName)
 				tabPane.setAttribute("role", "tabpanel")
-				tabPane.setAttribute("aria-labelledby", tabName + "-tab")
+				tabPane.setAttribute("aria-labelledby", codedTabName + "-tab")
 
-				styleProjectHeaders(tabName, tabPane)
-                createTaskForm(tabName, tabPane);
+				styleProjectHeaders(codedTabName, tabPane)
+                createTaskForm(codedTabName, tabPane);
                 tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
-                displayProjectBody(tabName);
+                displayProjectBody(codedTabName);
 
 
 
