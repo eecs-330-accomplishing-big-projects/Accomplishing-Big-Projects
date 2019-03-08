@@ -226,7 +226,7 @@ function displaySubtask(subtask,projectTitle)
 {
     let newRow = document.createElement("div");
     let rows = document.getElementById("Subtasks-" + projectTitle);
-    let card = generateExistingCard(subtask);
+    let card = generateExistingCard(subtask,projectTitle);
     let addSubtaskRow = document.getElementById("addSubtaskRow-" + projectTitle);
     rows.removeChild(addSubtaskRow);
     newRow.className += "row";
@@ -237,7 +237,7 @@ function displaySubtask(subtask,projectTitle)
     subTasks++;
 }
 
-function generateExistingCard(subtask)
+function generateExistingCard(subtask,project)
 {
 
     let subtaskCard = createSubtaskCard();
@@ -253,7 +253,7 @@ function generateExistingCard(subtask)
     removeSaveSubtaskButton(body);
     let wrapperCol = document.createElement("div");
     wrapperCol.setAttribute("class", "col-xl-6");
-    wrapperCol.setAttribute("id","subtask-" + subTasks);
+    wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
 
     wrapperCol.appendChild(subtaskCard);
     return wrapperCol;
@@ -364,10 +364,20 @@ function saveSubtask(subtaskID)
     let frame = document.getElementById(subtaskID);
     let card = frame.children[0];
     let cardBody = card.childNodes[1];
-
+    let rowIndex = findCardIndexInList(card);
     DisableFields(cardBody);
     updateHeader(card);
-    addSubtaskToList(cardBody)
+    if(rowIndex > userData.projects[getProjectIndexByTitle(getProjectTitleFromCardBody(cardBody))].subtasks.length - 1)
+    {
+        addSubtaskToList(cardBody);
+    }
+    else
+    {
+        ModifySubtaskInList(cardBody,rowIndex);
+    }
+
+
+
     removeSaveSubtaskButton(cardBody);
     saveUserData();
 }
@@ -378,20 +388,56 @@ function removeSaveSubtaskButton(cardBody)
     let saveButton = cardBody.children[0].children[4];
     cardBody.children[0].removeChild(saveButton);
 }
+function addSaveSubtaskButton(cardBody)
+{
+    let saveButtonHTML =`<button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
+                            <span class='icon text-white-50'><i class='material-icons'>add</i></span>
+                            <span class='text'>Save Subtask</span>
+                         </button>`
+    let parentElement = document.createElement("div");
+    parentElement.innerHTML = saveButtonHTML.trim();
+    let buttonElement = parentElement.firstChild;
+    cardBody.children[0].appendChild(buttonElement);
+}
+
 function saveUserData()
 {
     window.localStorage.setItem(UserName,JSON.stringify(userData));
 }
 
+function findCardIndexInList(card)
+{
+    let frame = card.parentElement;
+    let frameRow = frame.parentElement;
+    let rowIndex = -1;
+    let subtaskContainer = frame.parentElement.parentElement;
+    for(let i = 0; i < subtaskContainer.childNodes.length; i++)
+    {
+        if(subtaskContainer.childNodes[i] === frameRow)
+        {
+            rowIndex = i;
+        }
+    }
+    return rowIndex;
+}
 
 
 
-function deleteSubtask()
+function deleteSubtask(card)
 {
     // TODO
     if(confirm("Delete Subtask?"))
     {
-
+        let subTaskIndex = findCardIndexInList(card);
+        let cardBody = card.children[1];
+        let projectIndex = getProjectIndexByTitle(getProjectTitleFromCardBody(cardBody));
+        userData.projects[projectIndex].subtasks.splice(subTaskIndex,1);
+        let frame = card.parentElement;
+        let frameRow = frame.parentElement;
+        let rowContainer = frameRow.parentElement;
+        rowContainer.removeChild(frameRow);
+        saveUserData();
+        
     }
 }
 function addSubtaskToList(cardBody)
@@ -405,6 +451,19 @@ function addSubtaskToList(cardBody)
 
     let subTaskObject = {title: subtaskTitle.value, time: estimatedTime.value, flag: false};
     userData.projects[projectIndex].subtasks.push(subTaskObject);
+}
+
+function ModifySubtaskInList(cardBody,index)
+{
+    let subtaskTitle = cardBody.firstChild.children[1];
+    let estimatedTime = cardBody.firstChild.children[3];
+   
+    let projectTitle = getProjectTitleFromCardBody(cardBody);
+    let projectIndex = getProjectIndexByTitle(projectTitle);
+
+
+    let subTaskObject = {title: subtaskTitle.value, time: estimatedTime.value, flag: false};
+    userData.projects[projectIndex].subtasks[index] = subTaskObject;
 }
 
 
@@ -435,20 +494,32 @@ function DisableFields(cardBody)
     let estimatedTime = cardBody.firstChild.children[3];
     estimatedTime.setAttribute("disabled","true");
 }
-function EnableFields()
+function EnableFields(cardBody)
 {
-    // TODO
+    let subtaskTitle = cardBody.firstChild.children[1];
+    subtaskTitle.removeAttribute("disabled");
+    let estimatedTime = cardBody.firstChild.children[3];
+    estimatedTime.removeAttribute("disabled");
+    addSaveSubtaskButton(cardBody);
+    removeEditButton(cardBody);
 }
 
 function createEditButton()
 {
     let editButton = document.createElement("button");
     editButton.innerHTML = "<i class='material-icons'>edit</i>";
-    editButton.setAttribute("onclick","EnableFields()");
+    editButton.setAttribute("onclick","EnableFields(this.parentElement.parentElement.children[1])");
     editButton.setAttribute("class","float-right btn")
     return editButton;
 }
+function removeEditButton(cardBody)
+{
+    let cardWrapper = cardBody.parentElement;
+    let cardHeader = cardWrapper.firstChild;
+    let editButton = cardHeader.children[2];
+    cardHeader.removeChild(editButton);
 
+}
 function createDeleteButton()
 {
     let deleteButton = document.createElement("button");
@@ -460,7 +531,7 @@ function createDeleteButton()
 
 function getDeleteSubtaskCard(button)
 {
-    return button.parentElement.parentElement.parentElement;
+    return button.parentElement.parentElement;
 }
 
 
