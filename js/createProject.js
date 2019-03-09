@@ -16,8 +16,8 @@ function createSoloProject(){
 
 	let tabName = projectName.value
 	let projectDeadline = projectDeadlineId.value
-
-	let newProject = {title: tabName, deadline: projectDeadline, subtasks: []};
+    let codedTabName = tabName.replace(" ","_");
+	let newProject = {title: codedTabName, deadline: projectDeadline, subtasks: []};
 
 	userData.projects.push(newProject);
 	localStorage[localStorage.CurrentUser] = JSON.stringify(userData);
@@ -104,6 +104,32 @@ function includeCollabs(tabPane){
 
 	tabPane.appendChild(collabForm)
 	tabPane.appendChild(sharedWith)
+}
+
+function toggleCompleteSubtask(cardBody)
+{
+    let card = cardBody.parentElement;
+    let rowIndex = findCardIndexInList(card);
+    let projectTitle = getProjectTitleFromCardBody(cardBody);
+    let projectIndex = getProjectIndexByTitle(projectTitle);
+    let subtask = userData.projects[projectIndex].subtasks[rowIndex];
+    let completedButton = card.firstChild.children[1];
+    let header = card.firstChild;
+    if(subtask.flag)
+    {
+        completedButton.setAttribute("class","float-right btn btn-outline-success");
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold");
+        header.firstChild.textContent = subtask.title;
+
+    }
+    else
+    {
+        completedButton.setAttribute("class","float-right btn btn-success h-100");
+        header.firstChild.textContent = subtask.title + " (Complete)";
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold text-success");
+    }
+    userData.projects[projectIndex].subtasks[rowIndex].flag = !subtask.flag;
+    saveUserData();
 }
 
 function styleProjectHeaders(name, tabPane){
@@ -288,9 +314,10 @@ function generateNewCard(project)
     let subtaskCard = createSubtaskCard();
     let header = createHeader(true);
     let body = createBody();
+    addCompletedButton(header);
+    addDeleteButton(header);
     subtaskCard.appendChild(header);
     subtaskCard.appendChild(body);
-
     let wrapperCol = document.createElement("div");
     wrapperCol.setAttribute("class", "col-xl-6");
     wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
@@ -324,7 +351,6 @@ function createHeader(editing, subtask=false)
         header.setAttribute("class", "card-header p-1 pl-3");
 
         header.innerHTML = "<h5 class=' align-middle mt-2 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
-        addDeleteButton(header);
         return header;
     }
     else
@@ -505,7 +531,7 @@ function addEditButton(header)
     let editButton = createEditButton();
     header.appendChild(editButton);
 }
-function addCompletedButton(header,subtask)
+function addCompletedButton(header,subtask={flag: false})
 {
     let completedButton = createCompletedButton();
     if(subtask.flag)
@@ -525,7 +551,7 @@ function createCompletedButton()
 {
     let completedButton = document.createElement("button");
     completedButton.innerHTML = "<i class='fas fa-check'></i>";
-    completedButton.setAttribute("onclick","toggleComplete(this.parentElement.parentElement.children[1])");
+    completedButton.setAttribute("onclick","toggleCompleteSubtask(this.parentElement.parentElement.children[1])");
     return completedButton;
 
 }
