@@ -39,6 +39,7 @@ function drawProgressBar(project){
     }
     
     var percentage = completed*100/project_subtasks;
+    console.log(percentage);
     var actualprogressbar = document.createElement("div");
     
     if(percentage <= 20){
@@ -58,7 +59,7 @@ function drawProgressBar(project){
     }
     
     actualprogressbar.setAttribute("role","progressbar");
-    actualprogressbar.setAttribute("style","width: ".concat(percentage.toString()));
+    actualprogressbar.setAttribute("style",("width: ".concat(percentage.toString())).concat("%"));
     actualprogressbar.setAttribute("aria-valuenow",percentage.toString());
     actualprogressbar.setAttribute("aria-valuemin",(0).toString());
     actualprogressbar.setAttribute("aria-valuemax",(100).toString());
