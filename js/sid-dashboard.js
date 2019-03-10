@@ -7,16 +7,21 @@ function buildHeading(project){
     var project_title = document.createTextNode(project.title);
     var project_subtasks = project.subtasks.length;
     var completed = 0;
+    var total_hours = 0;
     var i;
     for (i = 0; i < project.subtasks.length; i++) {
         if (project.subtasks[i].flag === true){
-            completed += 1;
+            completed += project.subtasks[i].time;
+            total_hours += project.subtasks[i].time; 
+        }
+        else{
+            total_hours += project.subtasks[i].time;
         }
     }
         
     var span_element = document.createElement("span");
     span_element.setAttribute("class","float-right");
-    var completion_value = document.createTextNode((completed*100/project_subtasks).toString().concat("%"));
+    var completion_value = document.createTextNode(Math.round((completed*100/total_hours)).toString().concat("%"));
     span_element.appendChild(completion_value);
     projectname.appendChild(project_title);
     projectname.appendChild(span_element);
@@ -31,14 +36,19 @@ function drawProgressBar(project){
     
     var project_subtasks = project.subtasks.length;
     var completed = 0;
+    var total_hours = 0;
     var i;
     for (i = 0; i < project.subtasks.length; i++) {
         if (project.subtasks[i].flag === true){
-            completed += 1;
+            completed += project.subtasks[i].time;
+            total_hours += project.subtasks[i].time;
+        }
+        else{
+            total_hours += project.subtasks[i].time;
         }
     }
     
-    var percentage = completed*100/project_subtasks;
+    var percentage = Math.round((completed*100/total_hours));
     console.log(percentage);
     var actualprogressbar = document.createElement("div");
     
@@ -204,10 +214,74 @@ function init() {
   },
 });
         
+        var piecard2 = document.createElement("div");
+        piecard2.setAttribute("class","card shadow mb-4");
+        piecard2.setAttribute("style","width: 26rem;");
+        var pieheader2 = document.createElement("div");
+        pieheader2.setAttribute("class","card-header py-3 d-flex flex-row align-items-center justify-content-between");
+        var pietitle2 = document.createElement("h6");
+        pietitle2.setAttribute("class","m-0 font-weight-bold text-primary");
+        
+        //TO DO: Update card title
+        var pietitletext2 = document.createTextNode("XYZ");
+        pietitle2.appendChild(pietitletext2);
+        pieheader2.appendChild(pietitle2);
+        piecard2.appendChild(pieheader2);
+        
+        var piebody2 = document.createElement("div");
+        piebody2.setAttribute("class","card-body");
+        
+        var canvas2 = document.createElement("div");
+        canvas2.setAttribute("class","chart-pie pt-4 pb-2");
+        var chart_canvas2 = document.createElement("canvas");
+        chart_canvas2.setAttribute("id","projectspiechart2");
+        canvas2.appendChild(chart_canvas2);
+        piebody2.appendChild(canvas2);
+        piecard2.appendChild(piebody2);
+        active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
+        active_projects.appendChild(piecard2);
+        
+        var ctx2 = document.getElementById("projectspiechart2");
+        
+        var myPieChart2 = new Chart(ctx2, {
+                type: 'doughnut',
+                data: {
+            labels: ["In progress", "Completed", "Not Started"],
+            datasets: [{
+            data: [on_track, completed, not_started],
+            backgroundColor: ['#4e73df', '#1cc88a', '#ea4335'],
+            hoverBackgroundColor: ['#2e59d9', '#17a673', '#e12717'],
+            hoverBorderColor: "rgba(234, 236, 244, 1)",
+                        }],
+            },
+        options: {
+            maintainAspectRatio: false,
+            
+            tooltips: {
+        backgroundColor: "rgb(255,255,255)",
+                bodyFontColor: "#858796",
+      borderColor: '#dddfeb',
+      borderWidth: 1,
+      xPadding: 15,
+      yPadding: 15,
+      displayColors: false,
+      caretPadding: 10,
+    },
+    legend: {
+        display: true,
+        position: 'bottom',
+        labels:{
+            boxWidth: 15,
+        },
+    },
+    cutoutPercentage: 0,
+  },
+});
+
+        
+        
+        
     }
-    
-    console.log(userData);
-    debugger;
 }
 
 init()
