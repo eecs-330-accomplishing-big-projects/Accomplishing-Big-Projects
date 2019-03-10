@@ -16,8 +16,8 @@ function createSoloProject(){
 
 	let tabName = projectName.value
 	let projectDeadline = projectDeadlineId.value
-
-	let newProject = {title: tabName, deadline: projectDeadline, subtasks: []};
+    let codedTabName = tabName.replace(" ","_");
+	let newProject = {title: codedTabName, deadline: projectDeadline, subtasks: []};
 
 	userData.projects.push(newProject);
 	localStorage[localStorage.CurrentUser] = JSON.stringify(userData);
@@ -104,6 +104,32 @@ function includeCollabs(tabPane){
 
 	tabPane.appendChild(collabForm)
 	tabPane.appendChild(sharedWith)
+}
+
+function toggleCompleteSubtask(cardBody)
+{
+    let card = cardBody.parentElement;
+    let rowIndex = findCardIndexInList(card);
+    let projectTitle = getProjectTitleFromCardBody(cardBody);
+    let projectIndex = getProjectIndexByTitle(projectTitle);
+    let subtask = userData.projects[projectIndex].subtasks[rowIndex];
+    let completedButton = card.firstChild.children[1];
+    let header = card.firstChild;
+    if(subtask.flag)
+    {
+        completedButton.setAttribute("class","float-right btn btn-outline-success");
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold");
+        header.firstChild.textContent = subtask.title;
+
+    }
+    else
+    {
+        completedButton.setAttribute("class","float-right btn btn-success h-100");
+        header.firstChild.textContent = subtask.title + " (Complete)";
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold text-success");
+    }
+    userData.projects[projectIndex].subtasks[rowIndex].flag = !subtask.flag;
+    saveUserData();
 }
 
 function styleProjectHeaders(name, tabPane){
@@ -241,7 +267,8 @@ function generateExistingCard(subtask,project)
 {
 
     let subtaskCard = createSubtaskCard();
-    let header = createHeader(false,subtask.title);
+    let header = createHeader(false,subtask);
+    addCompletedButton(header,subtask)
     addDeleteButton(header);
     addEditButton(header);
     let body = createBody();
@@ -287,9 +314,10 @@ function generateNewCard(project)
     let subtaskCard = createSubtaskCard();
     let header = createHeader(true);
     let body = createBody();
+    addCompletedButton(header);
+    addDeleteButton(header);
     subtaskCard.appendChild(header);
     subtaskCard.appendChild(body);
-
     let wrapperCol = document.createElement("div");
     wrapperCol.setAttribute("class", "col-xl-6");
     wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
@@ -304,21 +332,39 @@ function createSubtaskCard()
     subtaskCard.setAttribute("class","card shadow mb-2 mt-4");
     return subtaskCard;
 }
-function createHeader(editing, name = "New Subtask")
+function createHeader(editing, subtask=false)
 {
+    let name = "";
+    let complete = false;
+    if(!subtask)
+    {
+        name = "New Subtask";
+    }
+    else
+    {
+        name = subtask.flag ? subtask.title + " (Complete)" : subtask.title;
+        complete = subtask.flag;
+    }
     if(editing)
     {
         let header = document.createElement("div");
-        header.setAttribute("class", "card-header py-3");
-        header.innerHTML = "<h5 class=' align-middle m-1 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
-        addDeleteButton(header);
+        header.setAttribute("class", "card-header p-1 pl-3");
+
+        header.innerHTML = "<h5 class=' align-middle mt-2 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
         return header;
     }
     else
     {
         let header = document.createElement("div");
-        header.setAttribute("class", "card-header align-middle py-3");
-        header.innerHTML = "<h5 class='align-middle m-1 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
+        header.setAttribute("class", "card-header align-middle p-1 pl-3");
+        if(complete)
+        {
+            header.innerHTML = "<h5 class='align-middle mt-2 d-sm-inline-block font-weight-bold text-success'>" + name + "</h5>";
+        }
+        else
+        {
+            header.innerHTML = "<h5 class='align-middle mt-2 d-sm-inline-block font-weight-bold'>" + name + "</h5>";
+        }
         return header;
     }
 }
@@ -477,7 +523,7 @@ function updateHeader(card)
 
     headerText.innerHTML = subtaskTitle.value;
     addEditButton(header);
-    headerText.setAttribute("class","m-0 d-sm-inline-block font-weight-bold");
+    headerText.setAttribute("class","mt-2 d-sm-inline-block font-weight-bold");
 }
 
 function addEditButton(header)
@@ -485,7 +531,30 @@ function addEditButton(header)
     let editButton = createEditButton();
     header.appendChild(editButton);
 }
+function addCompletedButton(header,subtask={flag: false})
+{
+    let completedButton = createCompletedButton();
+    if(subtask.flag)
+    {
+        completedButton.setAttribute("class","float-right btn btn-success h-100");
+        header.firstChild.value = subtask.title + " (Complete)";
+    }
+    else
+    {
+        completedButton.setAttribute("class","float-right btn btn-outline-success");
+        header.firstChild.value = subtask.title;
+    }
+    header.appendChild(completedButton);
 
+}
+function createCompletedButton()
+{
+    let completedButton = document.createElement("button");
+    completedButton.innerHTML = "<i class='fas fa-check'></i>";
+    completedButton.setAttribute("onclick","toggleCompleteSubtask(this.parentElement.parentElement.children[1])");
+    return completedButton;
+
+}
 
 function DisableFields(cardBody)
 {
@@ -509,23 +578,23 @@ function createEditButton()
     let editButton = document.createElement("button");
     editButton.innerHTML = "<i class='material-icons'>edit</i>";
     editButton.setAttribute("onclick","EnableFields(this.parentElement.parentElement.children[1])");
-    editButton.setAttribute("class","float-right btn")
+    editButton.setAttribute("class","float-right btn pb-0")
     return editButton;
 }
 function removeEditButton(cardBody)
 {
     let cardWrapper = cardBody.parentElement;
     let cardHeader = cardWrapper.firstChild;
-    let editButton = cardHeader.children[2];
+    let editButton = cardHeader.children[3];
     cardHeader.removeChild(editButton);
 
 }
 function createDeleteButton()
 {
     let deleteButton = document.createElement("button");
-    deleteButton.innerHTML = "<i class='material-icons'>delete</i>";
+    deleteButton.innerHTML = "<i class='fas fa-trash'></i>";
     deleteButton.setAttribute("onclick","deleteSubtask(getDeleteSubtaskCard(this))");
-    deleteButton.setAttribute("class","float-right btn btn-outline-danger")
+    deleteButton.setAttribute("class","float-right btn btn-outline-danger mh-100")
     return deleteButton;
 }
 
