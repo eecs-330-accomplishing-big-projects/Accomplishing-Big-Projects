@@ -174,7 +174,7 @@ function init() {
                 data: {
             labels: ["In progress", "Completed", "Not Started"],
             datasets: [{
-            data: [on_track*100/total_projects, completed*100/total_projects, not_started*100/total_projects],
+            data: [on_track, completed, not_started],
             backgroundColor: ['#4e73df', '#1cc88a', '#ea4335'],
             hoverBackgroundColor: ['#2e59d9', '#17a673', '#e12717'],
             hoverBorderColor: "rgba(234, 236, 244, 1)",
