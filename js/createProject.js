@@ -8,6 +8,7 @@ let totalEstimatedTime = 0
 let subTasks = 0;
 let savingTask = 0;
 
+
 function createSoloProject(){
 	let tabs = document.getElementById("myTab")
 	let tabPanes = document.getElementById("myTabContent")
@@ -133,7 +134,7 @@ function toggleCompleteSubtask(cardBody)
 }
 
 function styleProjectHeaders(name, tabPane){
-	let title = document.createElement("h3")
+	let title = document.createElement("h2")
 	title.setAttribute("class", "mb-0 text-gray-800")
 	title.innerHTML = " Project Name: " + name + "<br>"
 	tabPane.appendChild(title)
@@ -145,47 +146,38 @@ function styleProjectHeaders(name, tabPane){
 
 	let totalEstTime = document.createElement("h6")
 	totalEstTime.setAttribute("class", "mb-0 text-gray-800")
-	totalEstTime.innerHTML = "<br>  Total Estimated Time for Completion: " + totalTime() + "<br>"
+	totalEstTime.innerHTML = "<br>  Total Estimated Time for Completion: " + totalTime()
 	tabPane.appendChild(totalEstTime)
 }
 
 
 function createTaskForm(tabName,tabPane){
-	tabPane.innerHTML += "<br> <br>";
+	tabPane.innerHTML += "<br>";
 
 	let taskForm = document.createElement("div");
 	let taskRow = document.createElement("div");
 	let container = document.createElement("div");
 	let actualForm = document.createElement("form");
 	let addTaskButton = document.createElement("button");
-	let icon = document.createElement("span");
-	let iconPlaceholder = document.createElement("i");
 	let icon2 = document.createElement("span");
 
-	taskForm.setAttribute("class", "container-fluid");
+	taskForm.setAttribute("class", "container-fluid3");
 	taskForm.setAttribute("id", "Subtasks-" + tabName);
 
 	taskRow.setAttribute("class", "row");
 	taskRow.setAttribute("id", "addSubtaskRow-" + tabName);
 
-	container.setAttribute("class", "container-fluid");
+	container.setAttribute("class", "container-fluid3");
 
 	addTaskButton.setAttribute("type", "button");
     addTaskButton.setAttribute("class", "btn btn-primary btn-icon-split");
     addTaskButton.setAttribute("id",tabName + "-subtask");
 	addTaskButton.setAttribute("onclick", "addSubtask(getProjectTabTitle(this))");
 
-	icon.setAttribute("class", "icon text-white-50");
-
-	iconPlaceholder.setAttribute("class", "material-icons");
-	iconPlaceholder.innerHTML = "+";
 
 	icon2.setAttribute("class", "text");
 	icon2.innerHTML = "Add New Task";
 
-	icon.appendChild(iconPlaceholder);
-
-	addTaskButton.appendChild(icon);
 	addTaskButton.appendChild(icon2);
 
 	container.appendChild(addTaskButton);
@@ -263,6 +255,15 @@ function displaySubtask(subtask,projectTitle)
     subTasks++;
 }
 
+function dateValidation(date){
+    var now = new Date();
+    let valid = true;
+    if (date < now) {
+        valid = false;
+        return valid;
+    }
+}
+
 function generateExistingCard(subtask,project)
 {
 
@@ -279,7 +280,7 @@ function generateExistingCard(subtask,project)
     populateFields(body,subtask);
     removeSaveSubtaskButton(body);
     let wrapperCol = document.createElement("div");
-    wrapperCol.setAttribute("class", "col-xl-6");
+    wrapperCol.setAttribute("class", "col-xl-13");
     wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
 
     wrapperCol.appendChild(subtaskCard);
@@ -319,7 +320,7 @@ function generateNewCard(project)
     subtaskCard.appendChild(header);
     subtaskCard.appendChild(body);
     let wrapperCol = document.createElement("div");
-    wrapperCol.setAttribute("class", "col-xl-6");
+    wrapperCol.setAttribute("class", "col-xl-13");
     wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
 
     wrapperCol.appendChild(subtaskCard);
@@ -329,7 +330,7 @@ function generateNewCard(project)
 function createSubtaskCard()
 {
     let subtaskCard = document.createElement("div");
-    subtaskCard.setAttribute("class","card shadow mb-2 mt-4");
+    subtaskCard.setAttribute("class","card shadow mb-2 mt-2");
     return subtaskCard;
 }
 function createHeader(editing, subtask=false)
@@ -372,6 +373,7 @@ function addDeleteButton(header)
 {
     let deleteButton = createDeleteButton();
     header.appendChild(deleteButton);
+
 }
 
 function createBody()
@@ -387,12 +389,12 @@ function createSubtaskForm()
     let form = document.createElement("Form");
 
     let formText = `<h5>Subtask Name</h5>
-                    <input type='text' class='form-control' placeholder='Enter subtask name'>
+                    <input type='text' class='form-control' placeholder='Enter task name'>
+                    &nbsp;
                     <h5>Estimated Time (hours)</h5>
                     <input type='number' class='form-control' placeholder='Enter a time in hours'>
                     <button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
-                        <span class='icon text-white-50'><i class='material-icons'>add</i></span>
-                        <span class='text'>Save Subtask</span>
+                        <span class='text'>Save Task</span>
                     </button>`;
     formText.replace('\n','');
     form.innerHTML = formText;
@@ -437,8 +439,7 @@ function removeSaveSubtaskButton(cardBody)
 function addSaveSubtaskButton(cardBody)
 {
     let saveButtonHTML =`<button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
-                            <span class='icon text-white-50'><i class='material-icons'>add</i></span>
-                            <span class='text'>Save Subtask</span>
+                            <span class='text'>Save Task</span>
                          </button>`
     let parentElement = document.createElement("div");
     parentElement.innerHTML = saveButtonHTML.trim();
@@ -610,7 +611,6 @@ function init(){
 
     UserName = window.localStorage.getItem("CurrentUser");
 
-
     var localData = window.localStorage.getItem(UserName);
 
     if(localData)
@@ -640,6 +640,15 @@ function saveProject(){
     if(findProjectByTitle(title).length == 0){
         projectobject.title = document.getElementById("projectname").value;
         projectobject.subtasks = subtaskslist;
+
+        if (dateValidation(document.getElementById("projectdeadline").value)){
+            projectobject.deadline = document.getElementById("projectdeadline").value;
+        }
+        else{
+            alert("Please enter a date that works")
+            return
+        }
+
         projectobject.deadline = document.getElementById("projectdeadline").value;
         userData.projects.push(projectobject);
         window.localStorage.setItem(stringkey,JSON.stringify(userData));

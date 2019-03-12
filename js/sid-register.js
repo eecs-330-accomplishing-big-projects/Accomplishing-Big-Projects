@@ -29,28 +29,28 @@ function fieldValidation(){
 
     if(email!=email2){
         error.innerHTML = "The two email addresses don't match! Try again.";
-        document.getElementByIdById("fillallin").style = "color: red;";
+        document.getElementById("fillallin").style = "color: red;";
         el.href = "#";
         return false;
     }
 
     if(username.length<5){
         error.innerHTML = "The username needs to be at least 5 characters long! Try again.";
-        document.getElementByIdById("fillallin").style = "color: red;";
+        document.getElementById("fillallin").style = "color: red;";
         el.href = "#";
         return false;
     }
 
     if(password.length<5){
         error.innerHTML = "The password needs to be at least 5 characters long! Try again.";
-        document.getElementByIdById("fillallin").style = "color: red;";
+        document.getElementById("fillallin").style = "color: red;";
         el.href = "#";
         return false;
     }
 
     if(username === password){
         error.innerHTML = "The username and password cannot be the same.";
-        document.getElementByIdById("fillallin").style = "color: red;";
+        document.getElementById("fillallin").style = "color: red;";
         el.href = "#";
         return false;
     }
@@ -58,7 +58,7 @@ function fieldValidation(){
     if (!validateEmail(email)) 
     {
         error.innerHTML = "The email address is not a valid email address! Try again.";
-        document.getElementByIdById("fillallin").style = "color: red;";
+        document.getElementById("fillallin").style = "color: red;";
         el.href = "#";
         return false;
     }
