@@ -10,12 +10,13 @@ function buildHeading(project){
     var total_hours = 0;
     var i;
     for (i = 0; i < project.subtasks.length; i++) {
+        let subtaskTime = parseFloat(project.subtasks[i].time);
         if (project.subtasks[i].flag === true){
-            completed += project.subtasks[i].time;
-            total_hours += project.subtasks[i].time; 
+            completed += subtaskTime;
+            total_hours += subtaskTime; 
         }
         else{
-            total_hours += project.subtasks[i].time;
+            total_hours += subtaskTime;
         }
     }
 
@@ -39,12 +40,13 @@ function drawProgressBar(project){
     var total_hours = 0;
     var i;
     for (i = 0; i < project.subtasks.length; i++) {
+        let subtaskTime = parseFloat(project.subtasks[i].time);
         if (project.subtasks[i].flag === true){
-            completed += project.subtasks[i].time;
-            total_hours += project.subtasks[i].time;
+            completed += subtaskTime;
+            total_hours += subtaskTime;
         }
         else{
-            total_hours += project.subtasks[i].time;
+            total_hours += subtaskTime;
         }
     }
 
