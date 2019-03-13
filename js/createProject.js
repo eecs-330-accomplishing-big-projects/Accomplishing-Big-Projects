@@ -8,225 +8,182 @@ let totalEstimatedTime = 0
 let subTasks = 0;
 let savingTask = 0;
 
+var el = document.getElementById("submitProject");
+
+function formatDate(date) {
+    var d = new Date(date),
+        month = '' + (d.getMonth() + 1),
+        day = '' + d.getDate(),
+        year = d.getFullYear();
+
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    return [year, month, day].join('-');
+}
+
+
+function projectFieldValidation(){
+    let user_data = userData.projects
+    let tabs = document.getElementById("myTab")
+    let tabPanes = document.getElementById("myTabContent")
+    let projectName = document.getElementById("projectName").value
+    let projectDeadlineId = document.getElementById("projectDeadline").value
+    let error = document.getElementById("fillallin")
+    let currentDate = new Date();
+    let formattedCurrentDate = formatDate(currentDate)
+    // let deadlineDate = new Date(projectDeadlineId)
+
+    if ((projectName=="")||(projectDeadlineId=="")){
+        alert("Project not saved! Please fill in all the fields when you try again.")
+        el.removeAttribute("data-dismiss")
+        el.href = "#";
+        return false;
+    }
+    for(var i = 0; i < user_data.length; i++){
+        let projectTitle = user_data[i].title;
+        if(projectTitle == projectName){
+            alert("Project not saved! Please input a project title different from one already used.")
+            el.removeAttribute("data-dismiss")
+            el.href = "#";
+            return false;
+        }
+    }
+    if(formattedCurrentDate > projectDeadlineId){
+        alert("Project not saved! Please input a date in the future.")
+        el.removeAttribute("data-dismiss")
+        el.href = "#";
+        return false;
+    }
+    else{
+        el.setAttribute("data-dismiss", "modal")
+        createSoloProject()
+        return true;
+    }
+
+}
+
 
 function createSoloProject(){
-	let tabs = document.getElementById("myTab")
-	let tabPanes = document.getElementById("myTabContent")
-	let projectName = document.getElementById("projectName")
-	let projectDeadlineId = document.getElementById("projectDeadline")
 
-	let tabName = projectName.value
-	let projectDeadline = projectDeadlineId.value
+    let tabs = document.getElementById("myTab")
+    let tabPanes = document.getElementById("myTabContent")
+    let projectName = document.getElementById("projectName")
+    let projectDeadlineId = document.getElementById("projectDeadline")
+
+    let tabName = projectName.value;
+    let projectDeadline = projectDeadlineId.value;
     let codedTabName = tabName.replace(" ","_");
-	let newProject = {title: codedTabName, deadline: projectDeadline, subtasks: []};
+    let newProject = {title: codedTabName, deadline: projectDeadline, subtasks: []};
+    
+    userData.projects.push(newProject);
+    localStorage[localStorage.CurrentUser] = JSON.stringify(userData);
+    
+    updateTabs();
 
-	userData.projects.push(newProject);
-	localStorage[localStorage.CurrentUser] = JSON.stringify(userData);
-
-	updateTabs();
 }
 
-function createCollabProject(){
-	let tabs = document.getElementById("myTab")
-	let tabPanes = document.getElementById("myTabContent")
-	let projectName = document.getElementById("projectName")
-	let projectDeadlineId = document.getElementById("projectDeadline")
+//Functions within CreateSoloProject
 
-	let tabName = projectName.value
-	let projectDeadline = projectDeadlineId.value
-
-
-    let tab = document.createElement("li");
-    tab.setAttribute("class", "nav-item");
-
-    let link = document.createElement("a");
-    link.setAttribute("class", "nav-link");
-    link.setAttribute("id", "tab" + tabName);
-    link.setAttribute("data-toggle", "tab");
-    link.setAttribute("href", "#panel" + tabName);
-    link.setAttribute("role", "tab");
-    link.setAttribute("aria-controls", "home");
-    link.setAttribute("aria-selected", "false");
-
-    link.innerHTML = tabName
-
-    tab.appendChild(link)
-    tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
-
-    let tabPane = document.createElement("div")
-    tabPane.setAttribute("class", "tab-pane fade")
-    tabPane.setAttribute("id", "panel" + tabName)
-    tabPane.setAttribute("role", "tabpanel")
-    tabPane.setAttribute("aria-labelledby", tabName + "-tab")
-
-    styleProjectHeaders(tabName, tabPane)
-
-    tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
-
-    includeCollabs(tabPane)
-
-    createTaskForm(tabPane)
-
-    document.getElementById("projectName").value = ""
-    document.getElementById("projectDeadline").value = ""
-
-    let newProject = {title: name, tabName,deadline: projectDeadline, subtasks: [], collaborators: []};
-    userData.push(newProject);
-}
-
-function includeCollabs(tabPane){
-	let collabForm = document.createElement("div")
-	collabForm.setAttribute("class", "d-sm-flex align-items-center mb-3 mt-4")
-
-	let actualForm = document.createElement("form")
-
-	let formInput = document.createElement("input")
-	formInput.setAttribute("type", "text")
-	formInput.setAttribute("class", "form-control")
-	formInput.setAttribute("placeholder", "Enter email address")
-	formInput.setAttribute("id", "email-form")
-
-	actualForm.appendChild(formInput)
-	collabForm.appendChild(actualForm)
-
-	collabForm.innerHTML += "&nbsp;&nbsp;"
-
-	let collabButton = document.createElement("a")
-	collabButton.setAttribute("href", "#")
-	collabButton.setAttribute("class", "d-none d-sm-inline-block btn btn-primary shadow-sm")
-	collabButton.setAttribute("onclick", "addCollab()")
-	collabButton.innerHTML = "+ Add Email"
-
-	collabForm.appendChild(collabButton)
-
-	let sharedWith = document.createElement("div")
-	sharedWith.setAttribute("id", "shared-with")
-	sharedWith.innerHTML = "Shared with: "
-
-	tabPane.appendChild(collabForm)
-	tabPane.appendChild(sharedWith)
-}
-
-function toggleCompleteSubtask(cardBody)
+function updateTabs()
 {
-    let card = cardBody.parentElement;
-    let rowIndex = findCardIndexInList(card);
-    let projectTitle = getProjectTitleFromCardBody(cardBody);
-    let projectIndex = getProjectIndexByTitle(projectTitle);
-    let subtask = userData.projects[projectIndex].subtasks[rowIndex];
-    let completedButton = card.firstChild.children[1];
-    let header = card.firstChild;
-    if(subtask.flag)
-    {
-        completedButton.setAttribute("class","float-right btn btn-outline-success");
-        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold");
-        header.firstChild.textContent = subtask.title;
+
+    let tabs = document.getElementById("myTab")
+    let tabPanes = document.getElementById("myTabContent")
+
+    // clear out the tablist this could definitely be done better
+    for (var i = 0; i<userData.projects.length; i++){
+        var tabName = userData.projects[i].title;
+        let codedTabName = tabName.replace(" ","_");
+
+        if (!document.getElementById("tab" + codedTabName)) {
+            let tab = document.createElement("li");
+            tab.setAttribute("class", "nav-item");
+
+            let link = document.createElement("a");
+            link.setAttribute("class", "nav-link");
+            link.setAttribute("id", "tab" + codedTabName);
+            link.setAttribute("data-toggle", "tab");
+            link.setAttribute("href", "#panel" + codedTabName);
+            link.setAttribute("role", "tab");
+            link.setAttribute("aria-controls", "home");
+            link.setAttribute("aria-selected", "false");
+
+            link.innerHTML = codedTabName
+
+            tab.appendChild(link)
+            tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
+
+            let tabPane = document.createElement("div")
+            tabPane.setAttribute("class", "tab-pane fade")
+            tabPane.setAttribute("id", "panel" + codedTabName)
+            tabPane.setAttribute("role", "tabpanel")
+            tabPane.setAttribute("aria-labelledby", codedTabName + "-tab")
+
+            styleProjectHeaders(codedTabName, tabPane)
+            createTaskForm(codedTabName, tabPane);
+            tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
+            displayProjectBody(codedTabName);
+
+            document.getElementById("projectName").value = ""
+            document.getElementById("projectDeadline").value = ""
+        }
 
     }
-    else
-    {
-        completedButton.setAttribute("class","float-right btn btn-success h-100");
-        header.firstChild.textContent = subtask.title + " (Complete)";
-        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold text-success");
-    }
-    userData.projects[projectIndex].subtasks[rowIndex].flag = !subtask.flag;
-    saveUserData();
+
 }
+
+//Functions within updateTabs
 
 function styleProjectHeaders(name, tabPane){
-	let title = document.createElement("h2")
-	title.setAttribute("class", "mb-0 text-gray-800")
-	title.innerHTML = " Project Name: " + name + "<br>"
-	tabPane.appendChild(title)
+    let title = document.createElement("h2")
+    title.setAttribute("class", "mb-0 text-gray-800")
+    title.innerHTML = " Project Name: " + name + "<br>"
+    tabPane.appendChild(title)
 
-	let deadLine = document.createElement("h6")
-	deadLine.setAttribute("class", "mb-0 text-gray-800")
-	deadLine.innerHTML = "<br>  Project Deadline: " + document.getElementById("projectDeadline").value + "<br>"
-	tabPane.appendChild(deadLine)
-
-	let totalEstTime = document.createElement("h6")
-	totalEstTime.setAttribute("class", "mb-0 text-gray-800")
-	totalEstTime.innerHTML = "<br>  Total Estimated Time for Completion: " + totalTime()
-	tabPane.appendChild(totalEstTime)
+    let deadLine = document.createElement("h6")
+    deadLine.setAttribute("class", "mb-0 text-gray-800")
+    deadLine.innerHTML = "<br>  Project Deadline: " + document.getElementById("projectDeadline").value + "<br>"
+    tabPane.appendChild(deadLine)
 }
-
 
 function createTaskForm(tabName,tabPane){
-	tabPane.innerHTML += "<br>";
+    tabPane.innerHTML += "<br>";
 
-	let taskForm = document.createElement("div");
-	let taskRow = document.createElement("div");
-	let container = document.createElement("div");
-	let actualForm = document.createElement("form");
-	let addTaskButton = document.createElement("button");
-	let icon2 = document.createElement("span");
+    let taskForm = document.createElement("div");
+    let taskRow = document.createElement("div");
+    let container = document.createElement("div");
+    let actualForm = document.createElement("form");
+    let addTaskButton = document.createElement("button");
+    let icon2 = document.createElement("span");
 
-	taskForm.setAttribute("class", "container-fluid3");
-	taskForm.setAttribute("id", "Subtasks-" + tabName);
+    taskForm.setAttribute("class", "container-fluid3");
+    taskForm.setAttribute("id", "Subtasks-" + tabName);
 
-	taskRow.setAttribute("class", "row");
-	taskRow.setAttribute("id", "addSubtaskRow-" + tabName);
+    taskRow.setAttribute("class", "row");
+    taskRow.setAttribute("id", "addSubtaskRow-" + tabName);
 
-	container.setAttribute("class", "container-fluid3");
+    container.setAttribute("class", "container-fluid3");
 
-	addTaskButton.setAttribute("type", "button");
+    addTaskButton.setAttribute("type", "button");
     addTaskButton.setAttribute("class", "btn btn-primary btn-icon-split");
     addTaskButton.setAttribute("id",tabName + "-subtask");
-	addTaskButton.setAttribute("onclick", "addSubtask(getProjectTabTitle(this))");
+    addTaskButton.setAttribute("onclick", "addSubtask(getProjectTabTitle(this))");
 
+    icon2.setAttribute("class", "text");
+    icon2.innerHTML = "Add New Task";
 
-	icon2.setAttribute("class", "text");
-	icon2.innerHTML = "Add New Task";
+    addTaskButton.appendChild(icon2);
 
-	addTaskButton.appendChild(icon2);
+    container.appendChild(addTaskButton);
 
-	container.appendChild(addTaskButton);
+    taskRow.appendChild(container);
 
-	taskRow.appendChild(container);
+    taskForm.appendChild(taskRow);
 
-	taskForm.appendChild(taskRow);
-
-	tabPane.appendChild(taskForm);
+    tabPane.appendChild(taskForm);
 
 }
-
-function getProjectTabTitle(button)
-{
-    let buttonID = button.id;
-    let lastIndex = buttonID.lastIndexOf("-subtask");
-    let projectTitle = buttonID.substring(0,lastIndex);
-    return projectTitle;
-}
-
-function getProjectTitleFromCardBody(cardBody)
-{
-    let containerID = cardBody.parentElement.parentElement.id;
-    let lastIndex = containerID.lastIndexOf("project-")
-    let projectTitle = containerID.substring(lastIndex,containerID.length).split("project-")[1];
-    return projectTitle;
-}
-
-function totalTime(){
-
-	if (totalEstimatedTime < 0){
-		return totalEstimatedTime + "hours"
-	}
-	else{
-		return "No tasks input yet"
-	}
-}
-
-
-
-/////////////////////// subtasks
-
-
-
-
-
-// TODO: delete empty rows
-
-
 
 function displayProjectBody(title)
 {
@@ -239,6 +196,8 @@ function displayProjectBody(title)
 
     }
 }
+
+//Functions within displayProjectBody
 
 function displaySubtask(subtask,projectTitle)
 {
@@ -255,14 +214,7 @@ function displaySubtask(subtask,projectTitle)
     subTasks++;
 }
 
-function dateValidation(date){
-    var now = new Date();
-    let valid = true;
-    if (date < now) {
-        valid = false;
-        return valid;
-    }
-}
+//Functions within displaySubtask
 
 function generateExistingCard(subtask,project)
 {
@@ -287,45 +239,7 @@ function generateExistingCard(subtask,project)
     return wrapperCol;
 }
 
-function populateFields(cardBody,subtask)
-{
-    cardBody.firstChild.children[1].value = subtask.title;
-    cardBody.firstChild.children[3].value = subtask.time;
-}
-
-
-function addSubtask(project)
-{
-    let newRow = document.createElement("div");
-    let rows = document.getElementById("Subtasks-" + project);
-    let subTask = generateNewCard(project);
-    let addSubtaskRow = document.getElementById("addSubtaskRow-" + project);
-    rows.removeChild(addSubtaskRow);
-    newRow.className += "row";
-    newRow.appendChild(subTask);
-
-    rows.appendChild(newRow);
-    rows.appendChild(addSubtaskRow);
-    subTasks++;
-}
-
-function generateNewCard(project)
-{
-
-    let subtaskCard = createSubtaskCard();
-    let header = createHeader(true);
-    let body = createBody();
-    addCompletedButton(header);
-    addDeleteButton(header);
-    subtaskCard.appendChild(header);
-    subtaskCard.appendChild(body);
-    let wrapperCol = document.createElement("div");
-    wrapperCol.setAttribute("class", "col-xl-13");
-    wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
-
-    wrapperCol.appendChild(subtaskCard);
-    return wrapperCol;
-}
+//Functions within generateExistingCard
 
 function createSubtaskCard()
 {
@@ -333,6 +247,7 @@ function createSubtaskCard()
     subtaskCard.setAttribute("class","card shadow mb-2 mt-2");
     return subtaskCard;
 }
+
 function createHeader(editing, subtask=false)
 {
     let name = "";
@@ -369,6 +284,108 @@ function createHeader(editing, subtask=false)
         return header;
     }
 }
+
+function addCompletedButton(header,subtask={flag: false})
+{
+    let completedButton = createCompletedButton();
+    if(subtask.flag)
+    {
+        completedButton.setAttribute("class","float-right btn btn-success h-100");
+        header.firstChild.value = subtask.title + " (Complete)";
+    }
+    else
+    {
+        completedButton.setAttribute("class","float-right btn btn-outline-success");
+        header.firstChild.value = subtask.title;
+    }
+    header.appendChild(completedButton);
+
+}
+
+//Functions within addCompletedButton
+
+function createCompletedButton()
+{
+    let completedButton = document.createElement("button");
+    completedButton.innerHTML = "<i class='fas fa-check'></i>";
+    completedButton.setAttribute("onclick","toggleCompleteSubtask(this.parentElement.parentElement.children[1])");
+    return completedButton;
+
+}
+
+//Functions within createCompletedButton
+
+function toggleCompleteSubtask(cardBody)
+{
+    let card = cardBody.parentElement;
+    let rowIndex = findCardIndexInList(card);
+    let projectTitle = getProjectTitleFromCardBody(cardBody);
+    let projectIndex = getProjectIndexByTitle(projectTitle);
+    let subtask = userData.projects[projectIndex].subtasks[rowIndex];
+    let completedButton = card.firstChild.children[1];
+    let header = card.firstChild;
+    if(subtask.flag)
+    {
+        completedButton.setAttribute("class","float-right btn btn-outline-success");
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold");
+        header.firstChild.textContent = subtask.title;
+
+    }
+    else
+    {
+        completedButton.setAttribute("class","float-right btn btn-success h-100");
+        header.firstChild.textContent = subtask.title + " (Complete)";
+        header.firstChild.setAttribute("class","align-middle mt-2 d-sm-inline-block font-weight-bold text-success");
+    }
+    userData.projects[projectIndex].subtasks[rowIndex].flag = !subtask.flag;
+    saveUserData();
+}
+
+//Functions within toggleCompleteSubtask
+
+function findCardIndexInList(card)
+{
+    let frame = card.parentElement;
+    let frameRow = frame.parentElement;
+    let rowIndex = -1;
+    let subtaskContainer = frame.parentElement.parentElement;
+    for(let i = 0; i < subtaskContainer.childNodes.length; i++)
+    {
+        if(subtaskContainer.childNodes[i] === frameRow)
+        {
+            rowIndex = i;
+        }
+    }
+    return rowIndex;
+}
+
+function getProjectTitleFromCardBody(cardBody)
+{
+    let containerID = cardBody.parentElement.parentElement.id;
+    let lastIndex = containerID.lastIndexOf("project-")
+    let projectTitle = containerID.substring(lastIndex,containerID.length).split("project-")[1];
+    return projectTitle;
+}
+
+function getProjectIndexByTitle(title)
+{
+    for(let i = 0; i < userData.projects.length; i++)
+    {
+        if(userData.projects[i].title === title)
+        {
+            return i;
+        }
+    }
+    return false;
+}
+
+function saveUserData()
+{
+    window.localStorage.setItem(UserName,JSON.stringify(userData));
+}
+
+//Functions also within generateExistingCard
+
 function addDeleteButton(header)
 {
     let deleteButton = createDeleteButton();
@@ -376,12 +393,146 @@ function addDeleteButton(header)
 
 }
 
+//Functions within addDeleteButton
+
+function createDeleteButton()
+{
+    let deleteButton = document.createElement("button");
+    deleteButton.innerHTML = "<i class='fas fa-trash'></i>";
+    deleteButton.setAttribute("onclick","deleteSubtask(getDeleteSubtaskCard(this))");
+    deleteButton.setAttribute("class","float-right btn btn-outline-danger mh-100")
+    return deleteButton;
+}
+
+//Fucntions within createDeleteButton
+
+
+//Functions also within generateExistingCard
+
+function addEditButton(header)
+{
+    let editButton = createEditButton();
+    header.appendChild(editButton);
+}
+
+//Functions within addEditButton
+
+function createEditButton()
+{
+    let editButton = document.createElement("button");
+    editButton.innerHTML = "<i class='material-icons'>edit</i>";
+    editButton.setAttribute("onclick","EnableFields(this.parentElement.parentElement.children[1])");
+    editButton.setAttribute("class","float-right btn pb-0")
+    return editButton;
+}
+
+//Functions also within generateExistingCard
+
 function createBody()
 {
     let body = document.createElement("div");
     body.setAttribute("class","card-body");
     body.appendChild(createSubtaskForm());
     return body;
+}
+
+function DisableFields(cardBody)
+{
+    let subtaskTitle = cardBody.firstChild.children[1];
+    subtaskTitle.setAttribute("disabled","true");
+    let estimatedTime = cardBody.firstChild.children[3];
+    estimatedTime.setAttribute("disabled","true");
+}
+
+function populateFields(cardBody,subtask)
+{
+    cardBody.firstChild.children[1].value = subtask.title;
+    cardBody.firstChild.children[3].value = subtask.time;
+}
+
+function removeSaveSubtaskButton(cardBody)
+{
+    let saveButton = cardBody.children[0].children[4];
+    cardBody.children[0].removeChild(saveButton);
+}
+
+
+
+
+
+
+
+function getProjectTabTitle(button)
+{
+    let buttonID = button.id;
+    let lastIndex = buttonID.lastIndexOf("-subtask");
+    let projectTitle = buttonID.substring(0,lastIndex);
+    return projectTitle;
+}
+
+
+
+
+/////////////////////// subtasks
+
+
+
+
+
+// TODO: delete empty rows
+
+
+
+function dateValidation(date){
+    var now = new Date();
+    let valid = true;
+    if (date < now) {
+        valid = false;
+        return valid;
+    }
+}
+
+
+
+function addSubtask(project)
+{
+    let newRow = document.createElement("div");
+    let rows = document.getElementById("Subtasks-" + project);
+    let subTask = generateNewCard(project);
+    let addSubtaskRow = document.getElementById("addSubtaskRow-" + project);
+    rows.removeChild(addSubtaskRow);
+    newRow.className += "row";
+    newRow.appendChild(subTask);
+
+    rows.appendChild(newRow);
+    rows.appendChild(addSubtaskRow);
+    subTasks++;
+}
+
+function generateNewCard(project)
+{
+
+    let subtaskCard = createSubtaskCard();
+    let header = createHeader(true);
+    let body = createBody();
+    addCompletedButton(header);
+    addDeleteButton(header);
+    subtaskCard.appendChild(header);
+    subtaskCard.appendChild(body);
+    let wrapperCol = document.createElement("div");
+    wrapperCol.setAttribute("class", "col-xl-13");
+    wrapperCol.setAttribute("id","subtask-" + subTasks + "project-" + project);
+
+    wrapperCol.appendChild(subtaskCard);
+    return wrapperCol;
+}
+
+
+function addDeleteButton(header)
+{
+    let deleteButton = createDeleteButton();
+    header.appendChild(deleteButton);
+
 }
 
 function createSubtaskForm()
@@ -430,12 +581,6 @@ function saveSubtask(subtaskID)
     saveUserData();
 }
 
-
-function removeSaveSubtaskButton(cardBody)
-{
-    let saveButton = cardBody.children[0].children[4];
-    cardBody.children[0].removeChild(saveButton);
-}
 function addSaveSubtaskButton(cardBody)
 {
     let saveButtonHTML =`<button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
@@ -445,27 +590,6 @@ function addSaveSubtaskButton(cardBody)
     parentElement.innerHTML = saveButtonHTML.trim();
     let buttonElement = parentElement.firstChild;
     cardBody.children[0].appendChild(buttonElement);
-}
-
-function saveUserData()
-{
-    window.localStorage.setItem(UserName,JSON.stringify(userData));
-}
-
-function findCardIndexInList(card)
-{
-    let frame = card.parentElement;
-    let frameRow = frame.parentElement;
-    let rowIndex = -1;
-    let subtaskContainer = frame.parentElement.parentElement;
-    for(let i = 0; i < subtaskContainer.childNodes.length; i++)
-    {
-        if(subtaskContainer.childNodes[i] === frameRow)
-        {
-            rowIndex = i;
-        }
-    }
-    return rowIndex;
 }
 
 
@@ -527,43 +651,11 @@ function updateHeader(card)
     headerText.setAttribute("class","mt-2 d-sm-inline-block font-weight-bold");
 }
 
-function addEditButton(header)
-{
-    let editButton = createEditButton();
-    header.appendChild(editButton);
-}
-function addCompletedButton(header,subtask={flag: false})
-{
-    let completedButton = createCompletedButton();
-    if(subtask.flag)
-    {
-        completedButton.setAttribute("class","float-right btn btn-success h-100");
-        header.firstChild.value = subtask.title + " (Complete)";
-    }
-    else
-    {
-        completedButton.setAttribute("class","float-right btn btn-outline-success");
-        header.firstChild.value = subtask.title;
-    }
-    header.appendChild(completedButton);
 
-}
-function createCompletedButton()
-{
-    let completedButton = document.createElement("button");
-    completedButton.innerHTML = "<i class='fas fa-check'></i>";
-    completedButton.setAttribute("onclick","toggleCompleteSubtask(this.parentElement.parentElement.children[1])");
-    return completedButton;
 
-}
 
-function DisableFields(cardBody)
-{
-    let subtaskTitle = cardBody.firstChild.children[1];
-    subtaskTitle.setAttribute("disabled","true");
-    let estimatedTime = cardBody.firstChild.children[3];
-    estimatedTime.setAttribute("disabled","true");
-}
+
+
 function EnableFields(cardBody)
 {
     let subtaskTitle = cardBody.firstChild.children[1];
@@ -574,14 +666,6 @@ function EnableFields(cardBody)
     removeEditButton(cardBody);
 }
 
-function createEditButton()
-{
-    let editButton = document.createElement("button");
-    editButton.innerHTML = "<i class='material-icons'>edit</i>";
-    editButton.setAttribute("onclick","EnableFields(this.parentElement.parentElement.children[1])");
-    editButton.setAttribute("class","float-right btn pb-0")
-    return editButton;
-}
 function removeEditButton(cardBody)
 {
     let cardWrapper = cardBody.parentElement;
@@ -589,14 +673,6 @@ function removeEditButton(cardBody)
     let editButton = cardHeader.children[3];
     cardHeader.removeChild(editButton);
 
-}
-function createDeleteButton()
-{
-    let deleteButton = document.createElement("button");
-    deleteButton.innerHTML = "<i class='fas fa-trash'></i>";
-    deleteButton.setAttribute("onclick","deleteSubtask(getDeleteSubtaskCard(this))");
-    deleteButton.setAttribute("class","float-right btn btn-outline-danger mh-100")
-    return deleteButton;
 }
 
 function getDeleteSubtaskCard(button)
@@ -689,77 +765,9 @@ function findProjectByTitle(title)
     }
 }
 
-function getProjectIndexByTitle(title)
-{
-    for(let i = 0; i < userData.projects.length; i++)
-    {
-        if(userData.projects[i].title === title)
-        {
-            return i;
-        }
-    }
-    return false;
-}
-
 function decodeName(codedName)
 {
     
-}
-
-
-function updateTabs()
-{
-
-		let tabs = document.getElementById("myTab")
-		let tabPanes = document.getElementById("myTabContent")
-
-// clear out the tablist this could definitely be done better
-	var i;
-		for (i = 0; i<userData.projects.length; i++){
-			var tabName = userData.projects[i].title;
-            let codedTabName = tabName.replace(" ","_");
-			console.log(tabName);
-
-			if (!document.getElementById("tab" + codedTabName)) {
-
-				let tab = document.createElement("li");
-                tab.setAttribute("class", "nav-item");
-
-
-
-				let link = document.createElement("a");
-				link.setAttribute("class", "nav-link");
-				link.setAttribute("id", "tab" + codedTabName);
-				link.setAttribute("data-toggle", "tab");
-				link.setAttribute("href", "#panel" + codedTabName);
-				link.setAttribute("role", "tab");
-				link.setAttribute("aria-controls", "home");
-				link.setAttribute("aria-selected", "false");
-
-				link.innerHTML = codedTabName
-
-				tab.appendChild(link)
-				tabs.insertBefore(tab, tabs.children[tabs.childElementCount - 1])
-
-				let tabPane = document.createElement("div")
-				tabPane.setAttribute("class", "tab-pane fade")
-				tabPane.setAttribute("id", "panel" + codedTabName)
-				tabPane.setAttribute("role", "tabpanel")
-				tabPane.setAttribute("aria-labelledby", codedTabName + "-tab")
-
-				styleProjectHeaders(codedTabName, tabPane)
-                createTaskForm(codedTabName, tabPane);
-                tabPanes.insertBefore(tabPane, tabPanes.children[tabPanes.childElementCount - 1])
-                displayProjectBody(codedTabName);
-
-
-
-				document.getElementById("projectName").value = ""
-				document.getElementById("projectDeadline").value = ""
-			}
-
-		}
-
 }
 
 

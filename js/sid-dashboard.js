@@ -110,7 +110,7 @@ function init() {
 
     if (userData.projects.length > 0) {
         var heading = document.createElement("h1"), t = document.createTextNode("Project Tracking");
-        heading.setAttribute("class", "h3 mb-0 text-gray-800");
+        heading.setAttribute("class", "h3 mb-2 mt-4 text-gray-800");
         heading.appendChild(t);
         var active_projects = document.getElementById("ActiveProjects");
         var active_projects_heading = document.getElementById("ActiveProjectsHeading");
@@ -144,6 +144,32 @@ function init() {
 
         card.appendChild(cardbody);
 
+        var piecard2 = document.createElement("div");
+        piecard2.setAttribute("class","card shadow mb-4");
+        piecard2.setAttribute("style","width: 26rem;");
+        var pieheader2 = document.createElement("div");
+        pieheader2.setAttribute("class","card-header py-3 d-flex flex-row align-items-center justify-content-between");
+        var pietitle2 = document.createElement("h6");
+        pietitle2.setAttribute("class","m-0 font-weight-bold text-primary");
+
+        var pietitletext2 = document.createTextNode("Upcoming Deadlines");
+        pietitle2.appendChild(pietitletext2);
+        pieheader2.appendChild(pietitle2);
+        piecard2.appendChild(pieheader2);
+
+        var piebody2 = document.createElement("div");
+        piebody2.setAttribute("class","card-body");
+
+        var canvas2 = document.createElement("div");
+        canvas2.setAttribute("class","chart-pie pt-4 pb-2");
+        var chart_canvas2 = document.createElement("canvas");
+        chart_canvas2.setAttribute("id","projectspiechart2");
+        canvas2.appendChild(chart_canvas2);
+        piebody2.appendChild(canvas2);
+        piecard2.appendChild(piebody2);
+        active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
+        active_projects.appendChild(piecard2);
+
         var piecard = document.createElement("div");
         piecard.setAttribute("class","card shadow mb-4");
         piecard.setAttribute("style","width: 26rem;");
@@ -168,6 +194,7 @@ function init() {
         piecard.appendChild(piebody);
         active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
         active_projects.appendChild(piecard);
+
 
         //        var pietags = document.createElement("div");
         //        pietags.setAttribute("class","mt-4 text-center small");
@@ -240,33 +267,6 @@ function init() {
                 cutoutPercentage: 0,
             },
         });
-
-
-        var piecard2 = document.createElement("div");
-        piecard2.setAttribute("class","card shadow mb-4");
-        piecard2.setAttribute("style","width: 26rem;");
-        var pieheader2 = document.createElement("div");
-        pieheader2.setAttribute("class","card-header py-3 d-flex flex-row align-items-center justify-content-between");
-        var pietitle2 = document.createElement("h6");
-        pietitle2.setAttribute("class","m-0 font-weight-bold text-primary");
-
-        var pietitletext2 = document.createTextNode("Upcoming Deadlines");
-        pietitle2.appendChild(pietitletext2);
-        pieheader2.appendChild(pietitle2);
-        piecard2.appendChild(pieheader2);
-
-        var piebody2 = document.createElement("div");
-        piebody2.setAttribute("class","card-body");
-
-        var canvas2 = document.createElement("div");
-        canvas2.setAttribute("class","chart-pie pt-4 pb-2");
-        var chart_canvas2 = document.createElement("canvas");
-        chart_canvas2.setAttribute("id","projectspiechart2");
-        canvas2.appendChild(chart_canvas2);
-        piebody2.appendChild(canvas2);
-        piecard2.appendChild(piebody2);
-        active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
-        active_projects.appendChild(piecard2);
 
         var ctx2 = document.getElementById("projectspiechart2");
 
