@@ -3,12 +3,11 @@ let userData = [];
 let selectedProject;
 let UserName;
 
-let totalEstimatedTime = 0
-
 let subTasks = 0;
 let savingTask = 0;
 
 var el = document.getElementById("submitProject");
+var el2 = document.getElementById("submitTask");
 
 function formatDate(date) {
     var d = new Date(date),
@@ -129,6 +128,11 @@ function updateTabs()
             document.getElementById("projectDeadline").value = ""
         }
 
+        tabs.children[0].children[0].setAttribute("class", "nav-item nav-link active")
+        tabs.children[0].children[0].setAttribute("aria-selected", "true")
+
+        tabPanes.children[0].setAttribute("class", "tab-pane show fade active")
+
     }
 
 }
@@ -136,6 +140,8 @@ function updateTabs()
 //Functions within updateTabs
 
 function styleProjectHeaders(name, tabPane){
+    let tabPanes = document.getElementById("myTabContent")
+
     let title = document.createElement("h2")
     title.setAttribute("class", "mb-0 text-gray-800")
     title.innerHTML = " Project Name: " + name + "<br>"
@@ -143,7 +149,7 @@ function styleProjectHeaders(name, tabPane){
 
     let deadLine = document.createElement("h6")
     deadLine.setAttribute("class", "mb-0 text-gray-800")
-    deadLine.innerHTML = "<br>  Project Deadline: " + document.getElementById("projectDeadline").value + "<br>"
+    deadLine.innerHTML = "<br>  Project Deadline: " + userData.projects[tabPanes.childElementCount - 1].deadline + "<br>"
     tabPane.appendChild(deadLine)
 }
 
@@ -254,7 +260,7 @@ function createHeader(editing, subtask=false)
     let complete = false;
     if(!subtask)
     {
-        name = "New Subtask";
+        name = "New Task";
     }
     else
     {
@@ -266,7 +272,7 @@ function createHeader(editing, subtask=false)
         let header = document.createElement("div");
         header.setAttribute("class", "card-header p-1 pl-3");
 
-        header.innerHTML = "<h5 class=' align-middle mt-2 d-sm-inline-block font-weight-bold text-primary'>New Subtask</h5>";
+        header.innerHTML = "<h5 class=' align-middle mt-2 d-sm-inline-block font-weight-bold text-primary'>New Task</h5>";
         return header;
     }
     else
@@ -539,12 +545,13 @@ function createSubtaskForm()
 {
     let form = document.createElement("Form");
 
-    let formText = `<h5>Subtask Name</h5>
-                    <input type='text' class='form-control' placeholder='Enter task name'>
+
+    let formText = `<h5>Task Name</h5>
+                    <input type='text' class='form-control' id='taskName' placeholder='Enter task name'>
                     &nbsp;
                     <h5>Estimated Time (hours)</h5>
-                    <input type='number' class='form-control' placeholder='Enter a time in hours'>
-                    <button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
+                    <input type='number' class='form-control' id='estTime' placeholder='Enter a time in hours'>
+                    <button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='taskFieldValidation(getButtonCardID(this))'>
                         <span class='text'>Save Task</span>
                     </button>`;
     formText.replace('\n','');
@@ -555,6 +562,31 @@ function createSubtaskForm()
 function getButtonCardID(button)
 {
     return button.parentElement.parentElement.parentElement.parentElement.id;
+}
+
+function taskFieldValidation(subtaskID, projectName){
+    let user_data = userData.projects
+    let tabs = document.getElementById("myTab")
+    let tabPanes = document.getElementById("myTabContent")
+    let taskName = document.getElementById("taskName").value
+    let estimatedTime = document.getElementById("estTime").value
+    let currentDate = new Date();
+    let formattedCurrentDate = formatDate(currentDate)
+    // let deadlineDate = new Date(projectDeadlineId)
+
+    if ((taskName=="")||(estimatedTime=="")){
+        alert("Task not saved! Please fill in all the fields when you try again.")
+        return false;
+    }
+    if(estimatedTime <= 0){
+        alert("Task not saved! Please input a time greater than 0.")
+        return false;
+    }
+    else{
+        saveSubtask(subtaskID)
+        return true;
+    }
+
 }
 
 
@@ -583,7 +615,7 @@ function saveSubtask(subtaskID)
 
 function addSaveSubtaskButton(cardBody)
 {
-    let saveButtonHTML =`<button type='button' class='btn btn-success mt-2 btn-icon-split' onclick='saveSubtask(getButtonCardID(this))'>
+    let saveButtonHTML =`<button type='button' class='btn btn-success mt-2 btn-icon-split' id = 'submitTask' onclick='taskFieldValidation(getButtonCardID(this, getProjectTabTitle(this)))'>
                             <span class='text'>Save Task</span>
                          </button>`
     let parentElement = document.createElement("div");
@@ -597,7 +629,7 @@ function addSaveSubtaskButton(cardBody)
 function deleteSubtask(card)
 {
     // TODO
-    if(confirm("Delete Subtask?"))
+    if(confirm("Delete Task?"))
     {
         let subTaskIndex = findCardIndexInList(card);
         let cardBody = card.children[1];
