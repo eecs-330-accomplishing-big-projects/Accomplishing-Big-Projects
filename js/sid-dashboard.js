@@ -116,11 +116,11 @@ function init() {
         heading.appendChild(t);
         var active_projects = document.getElementById("ActiveProjects");
         var active_projects_heading = document.getElementById("ActiveProjectsHeading");
+        var active_projects2 = document.getElementById("ActiveProjects2");
         active_projects_heading.appendChild(heading);
 
         var card = document.createElement("div");
         card.setAttribute("class", "card shadow mb-4");
-        card.setAttribute("style","width: 26rem;");
         var header = document.createElement("div");
         header.setAttribute("class", "card-header py-3");
         var title = document.createElement("h6");
@@ -170,7 +170,7 @@ function init() {
         piebody2.appendChild(canvas2);
         piecard2.appendChild(piebody2);
         active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
-        active_projects.appendChild(piecard2);
+        active_projects2.appendChild(piecard2);
 
         var piecard = document.createElement("div");
         piecard.setAttribute("class","card shadow mb-4");
@@ -194,16 +194,8 @@ function init() {
         canvas.appendChild(chart_canvas);
         piebody.appendChild(canvas);
         piecard.appendChild(piebody);
-        active_projects.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
-        active_projects.appendChild(piecard);
-
-
-        //        var pietags = document.createElement("div");
-        //        pietags.setAttribute("class","mt-4 text-center small");
-        //        var span1 = document.createElement("span"), span2 = document.createElement("span"), span3 = document.createElement("span");
-        //        span1.setAttribute("class","mr-2");
-        //        span2.setAttribute("class","mr-2");
-        //        span3.setAttribute("class","mr-2");
+        active_projects2.appendChild(document.createTextNode("\u00A0\u00A0\u00A0\u00A0"));
+        active_projects2.appendChild(piecard);
 
         var ctx = document.getElementById("projectspiechart");
 
