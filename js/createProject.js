@@ -128,11 +128,6 @@ function updateTabs()
             document.getElementById("projectDeadline").value = ""
         }
 
-        tabs.children[0].children[0].setAttribute("class", "nav-item nav-link active")
-        tabs.children[0].children[0].setAttribute("aria-selected", "true")
-
-        tabPanes.children[0].setAttribute("class", "tab-pane show fade active")
-
     }
 
 }
