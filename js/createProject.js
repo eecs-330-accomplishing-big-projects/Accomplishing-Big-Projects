@@ -559,17 +559,15 @@ function getButtonCardID(button)
     return button.parentElement.parentElement.parentElement.parentElement.id;
 }
 
-function taskFieldValidation(subtaskID, projectName){
-    let user_data = userData.projects
-    let tabs = document.getElementById("myTab")
-    let tabPanes = document.getElementById("myTabContent")
-    let taskName = document.getElementById("taskName").value
-    let estimatedTime = document.getElementById("estTime").value
-    let currentDate = new Date();
-    let formattedCurrentDate = formatDate(currentDate)
-    // let deadlineDate = new Date(projectDeadlineId)
+function taskFieldValidation(subtaskID, projectName)
+{
+    let frame = document.getElementById(subtaskID);
+    let card = frame.children[0];
+    let cardBody = card.childNodes[1];
+    let subtaskTitle = cardBody.firstChild.children[1].value;
+    let estimatedTime = cardBody.firstChild.children[3].value;
 
-    if ((taskName=="")||(estimatedTime=="")){
+    if ((subtaskTitle=="")||(estimatedTime=="")){
         alert("Task not saved! Please fill in all the fields when you try again.")
         return false;
     }
